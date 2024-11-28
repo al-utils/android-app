@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="al_utils_app.MainPage"
+             Background="Red">
+
+    <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
+
+        <Frame BackgroundColor="#141414" CornerRadius="0"
+               HeightRequest="50" Padding="0"/>
+
+        <Frame BackgroundColor="#262524" CornerRadius="0">
+            <StackLayout Orientation="Horizontal">
+                <Label Text="AniList Airing"
+                       TextColor="White"
+                       HeightRequest="40"
+                       Margin="5, 0"
+                       FontFamily="Jost"
+                       FontSize="28"/>
+                <Label Text="for @java"
+                       TextColor="#aaaaaa"
+                       HeightRequest="40"
+                       FontFamily="Jost"
+                       TextTransform="Lowercase"
+                       FontSize="28"/>
+            </StackLayout>
+        </Frame>
+
+        <ScrollView>
+
+            <StackLayout>
+                
+                <Grid x:Name="grid"
+                      Padding="20, 20, 20, 100"
+                      ColumnSpacing="23"
+                      RowSpacing="23"
+                      VerticalOptions="FillAndExpand">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="320"/>
+                        <RowDefinition Height="320"/>
+                        <RowDefinition Height="320"/>
+                        <RowDefinition Height="320"/>
+                    </Grid.RowDefinitions>
+                    -->
+
+
+                    <!-- card -->
+                    <!--
+                    <AbsoluteLayout Grid.Column="0"
+                                    Padding="0">
+                        <Frame Style="{StaticResource imageFrame}"
+                               Padding="0">
+                            <Image Source="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx179919-KLuGsnqnhkPb.jpg"
+                                   Aspect="AspectFill"/>
+                        </Frame>
+
+                        <Frame Style="{StaticResource imageFrame}">
+                            <Frame.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="Transparent"/>
+                                    <GradientStop Color="Transparent"/>
+                                    <GradientStop Color="Transparent"/>
+                                    <GradientStop Color="#90151515"/>
+                                    <GradientStop Color="#151515"/>
+                                </LinearGradientBrush>
+                            </Frame.Background>
+                        </Frame>
+
+                        <StackLayout Padding="17" Orientation="Vertical" VerticalOptions="End"
+                                     AbsoluteLayout.LayoutBounds="0, 1, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                            <Label Text="Negative Positive Angler" 
+                                   FontSize="18" TextColor="White"
+                                   FontFamily="Jost"/>
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="Ep 55559: 1d6h" FontSize="16" HorizontalOptions="StartAndExpand" 
+                                       TextColor="White" FontFamily="Jost"/>
+                                <Ellipse Fill="#d84646" HorizontalOptions="End" VerticalOptions="Center"
+                                         Margin="5"
+                                         HeightRequest="12" WidthRequest="12"/>
+                                <Label Text="8/12" FontSize="16" HorizontalOptions="End" 
+                                       TextColor="#959595" FontFamily="Jost"/>
+                            </StackLayout>
+                        </StackLayout>
+                    </AbsoluteLayout>
+
+                    
+                    
+                    <Frame Grid.Column="1"
+                           Style="{StaticResource imageFrame}"
+                           BackgroundColor="Green">
+                    </Frame>
+                    <Frame Grid.Column="0"
+                           Grid.Row="1"
+                           Style="{StaticResource imageFrame}"
+                           BackgroundColor="Black">
+                    </Frame>
+                    <Frame Grid.Column="1"
+                           Grid.Row="1"
+                           Style="{StaticResource imageFrame}"
+                           BackgroundColor="Blue">
+                    </Frame>
+                    <Frame Grid.Column="0"
+                           Grid.Row="2"
+                           Style="{StaticResource imageFrame}"
+                           BackgroundColor="Yellow">
+                    </Frame>
+                    <Frame Grid.Column="1"
+                           Grid.Row="2"
+                           Style="{StaticResource imageFrame}"
+                           BackgroundColor="Lime">
+                    </Frame>
+                    -->
+                </Grid>
+            </StackLayout>
+
+        </ScrollView>
+
+    </StackLayout>
+
+</ContentPage>

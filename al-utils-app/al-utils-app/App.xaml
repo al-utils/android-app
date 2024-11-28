@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="al_utils_app.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Style x:Key="imageFrame" TargetType="Frame">
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="AbsoluteLayout.LayoutBounds" Value="0, 1, 1, 1"/>
+                <Setter Property="AbsoluteLayout.LayoutFlags" Value="All"/>
+            </Style>
+            <Style x:Key="otherFrame" TargetType="StackLayout">
+                <Setter Property="AbsoluteLayout.LayoutBounds" Value="0, 1, 1, 1"/>
+                <Setter Property="AbsoluteLayout.LayoutFlags" Value="All"/>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
