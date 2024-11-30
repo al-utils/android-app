@@ -14,18 +14,4 @@ namespace al_utils_app
         [JsonPropertyName("episode")]
         public int? Episode { get; set; }
     }
-
-    internal class MediaAiringScheduleComparer : IComparer<MediaAiringSchedule>
-    {
-        public int Compare(MediaAiringSchedule x, MediaAiringSchedule y)
-        {
-            if (x.TimeUntilAiring == y.TimeUntilAiring)
-                return 0;
-            if (x == null)
-                return 1;
-            if (y == null)
-                return -1;
-            return x.TimeUntilAiring < y.TimeUntilAiring ? 1 : -1;
-        }
-    }
 }

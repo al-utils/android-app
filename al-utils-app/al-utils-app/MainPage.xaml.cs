@@ -22,6 +22,8 @@ namespace al_utils_app
         private const int numCols = 2;
         private const int maxPages = 10; // idk
 
+        private string currentUser = "java";
+
         // todo:
         // username
         // options?
@@ -60,58 +62,57 @@ namespace al_utils_app
 
         public async Task GetData()
         {
-            Console.Out.WriteLine("EOIFJOEIJFOIEJOFIJEOIJFOIEJ");
             Dictionary<string, string> json = new Dictionary<string, string>();
             string query = BuildQuery();
 
             json.Add("query", query);
             Dictionary<string, string> variables = new Dictionary<string, string>();
-            variables.Add("name", "java");
+            variables.Add("name", currentUser);
             json.Add("variables", JsonSerializer.Serialize(variables));
             string jsonString = JsonSerializer.Serialize(json);
 
-            using (client)
+            // request
+            var response = await client.PostAsync(URL, new StringContent(jsonString, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+            jsonString = await response.Content.ReadAsStringAsync();
+
+            Response data = JsonSerializer.Deserialize<Response>(jsonString);
+
+            var dict = data.Data.Pages;
+            List<Media> mediaList = new List<Media>();
+
+            // combine into one list
+            foreach (KeyValuePair<string, object> page in dict)
             {
-                var response = await client.PostAsync(URL, new StringContent(jsonString, Encoding.UTF8, "application/json"));
-                response.EnsureSuccessStatusCode();
-                jsonString = await response.Content.ReadAsStringAsync();
+                var jsonElement = page.Value;
+                var jsonString2 = jsonElement.ToString();
+                ResponsePage data2 = JsonSerializer.Deserialize<ResponsePage>(jsonString2);
+                mediaList.AddRange(data2.MediaList);
+                Console.Out.WriteLine(data2.MediaList.Count);
+            }
+            Console.Out.WriteLine(mediaList.Count);
 
-                Response data = JsonSerializer.Deserialize<Response>(jsonString);
+            // filter
+            mediaList = mediaList.Where(x => x.Details.Airing != null)
+                                    .OrderBy(x => x.Details.Airing.TimeUntilAiring)
+                                    .ToList();
 
-                var dict = data.Data.Pages;
-                List<Media> mediaList = new List<Media>();
+            Console.Out.WriteLine(mediaList.Count);
 
-                // combine into one list
-                foreach (KeyValuePair<string, object> page in dict)
+            // clear grid
+            grid.Children.Clear();
+            grid.RowDefinitions.Clear();
+
+            var total = 0;
+            foreach (Media media in mediaList)
+            {
+                var before = total;
+                total += MakeCard(total, media);
+
+                if (total % numCols == 0 && total != before)
                 {
-                    var jsonElement = page.Value;
-                    var jsonString2 = jsonElement.ToString();
-                    //Console.Out.WriteLine(page.Value.GetType());
-                    //Console.Out.WriteLine("HERE");
-                    ResponsePage data2 = JsonSerializer.Deserialize<ResponsePage>(jsonString2);
-                    mediaList.AddRange(data2.MediaList);
-                    Console.Out.WriteLine(data2.MediaList.Count);
-                }
-                Console.Out.WriteLine(mediaList.Count);
-
-                // filter
-                mediaList = mediaList.Where(x => x.Details.Airing != null)
-                                     .OrderBy(x => x.Details.Airing.TimeUntilAiring)
-                                     .ToList();
-
-                Console.Out.WriteLine(mediaList.Count);
-
-                var total = 0;
-                foreach (Media media in mediaList)
-                {
-                    var before = total;
-                    total += MakeCard(total, media);
-
-                    if (total % numCols == 0 && total != before)
-                    {
-                        // add column
-                        grid.RowDefinitions.Add(new RowDefinition() { Height = 320 });
-                    }
+                    // add column
+                    grid.RowDefinitions.Add(new RowDefinition() { Height = 320 });
                 }
             }
         }
@@ -251,11 +252,100 @@ namespace al_utils_app
         public MainPage()
         {
             InitializeComponent();
+            userIcon.Source = ImageSource.FromResource("al-utils-app.Images.user.png");
         }
 
         protected override async void OnAppearing()
         {
             await GetData();
+        }
+
+        private int IsID(string s)
+        {
+            try
+            {
+                var x = Int32.Parse(s);
+                return x;
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        private async Task SearchUserByID(int ID)
+        {
+            var query = $@"query {{
+  User (id: {ID}) {{
+    id
+    name
+  }}
+}}
+";
+            await SearchUser(query, "" + ID);
+        }
+
+        private async Task SearchUserByUsername(string username)
+        {
+            var query = $@"query {{
+  User (name: ""{username}"") {{
+    id
+    name
+  }}
+}}
+";
+            await SearchUser(query, username);
+        }
+
+        private async Task SearchUser(string query, string input)
+        {
+            Dictionary<string, string> json = new Dictionary<string, string>();
+
+            json.Add("query", query);
+            string jsonString = JsonSerializer.Serialize(json);
+
+            Console.Out.WriteLine(jsonString);
+
+            var response = await client.PostAsync(URL, new StringContent(jsonString, Encoding.UTF8, "application/json"));
+            if (!response.IsSuccessStatusCode)
+            {
+                await DisplayAlert("Error", "User not Found: " + input, "Retry");
+                await DisplaySearchUserPrompt();
+                return;
+            }
+            jsonString = await response.Content.ReadAsStringAsync();
+
+            Console.Out.WriteLine(jsonString);
+
+            Response data = JsonSerializer.Deserialize<Response>(jsonString);
+            User user = data.Data.User;
+            currentUser = user.Name;
+
+            // regenerate chart
+            await GetData();
+            forUser.Text = "for @" + user.Name;
+        }
+
+        private async void userIcon_Clicked(object sender, EventArgs e)
+        {
+            await DisplaySearchUserPrompt();
+        }
+
+        private async Task DisplaySearchUserPrompt()
+        {
+            var result = await DisplayPromptAsync("Search for User", "Enter username or ID: ");
+            if (result != null && result != "")
+            {
+                var x = IsID(result);
+                if (x != -1)
+                {
+                    await SearchUserByID(x);
+                }
+                else
+                {
+                    await SearchUserByUsername(result);
+                }
+            }
         }
     }
 }

@@ -11,6 +11,9 @@ namespace al_utils_app
         [JsonExtensionData]
         public Dictionary<string, object> Pages { get; set; }
         //public ResponsePage Page { get; set; }
+
+        [JsonPropertyName("User")]
+        public User User { get; set; }
         public override string ToString()
         {
             return "data";
