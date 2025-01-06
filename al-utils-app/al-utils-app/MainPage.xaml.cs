@@ -12,6 +12,8 @@ using System.Text.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xamarin.Forms.Shapes;
+using Xamarin.Essentials;
+using System.Windows.Input;
 
 namespace al_utils_app
 {
@@ -60,7 +62,7 @@ namespace al_utils_app
             return s + "}";
         }
 
-        public async Task GetData()
+        private async Task<List<Media>> GetData()
         {
             Dictionary<string, string> json = new Dictionary<string, string>();
             string query = BuildQuery();
@@ -88,17 +90,22 @@ namespace al_utils_app
                 var jsonString2 = jsonElement.ToString();
                 ResponsePage data2 = JsonSerializer.Deserialize<ResponsePage>(jsonString2);
                 mediaList.AddRange(data2.MediaList);
-                Console.Out.WriteLine(data2.MediaList.Count);
+                //Console.Out.WriteLine(data2.MediaList.Count);
             }
-            Console.Out.WriteLine(mediaList.Count);
+            //Console.Out.WriteLine("MediaList Count: " + mediaList.Count);
 
             // filter
             mediaList = mediaList.Where(x => x.Details.Airing != null)
-                                    .OrderBy(x => x.Details.Airing.TimeUntilAiring)
-                                    .ToList();
+                                 .OrderBy(x => x.Details.Airing.TimeUntilAiring)
+                                 .ToList();
 
-            Console.Out.WriteLine(mediaList.Count);
+            Console.Out.WriteLine("MediaList Count: " + mediaList.Count);
+            return mediaList;
+        }
 
+        private async Task CreateCards()
+        {
+            List<Media> mediaList = await GetData();
             // clear grid
             grid.Children.Clear();
             grid.RowDefinitions.Clear();
@@ -114,6 +121,45 @@ namespace al_utils_app
                     // add column
                     grid.RowDefinitions.Add(new RowDefinition() { Height = 320 });
                 }
+            }
+        }
+
+        private async Task UpdateData()
+        {
+            if (grid.Children.Count == 0)
+            {
+                await CreateCards();
+                return;
+            }
+
+            List<Media> mediaList = await GetData();
+            for (int i = 0; i < grid.Children.Count; i++)
+            {
+                Media media = mediaList[i];
+                var timeUntilAiring = (int)media.Details.Airing.TimeUntilAiring;
+                var nextAiringEpisode = media.Details.Airing.Episode;
+                var progress = media.Progress;
+                var episodes = "";
+                if (media.Details.Episodes == null)
+                    episodes = "?";
+                else
+                    episodes = "" + media.Details.Episodes;
+
+                AbsoluteLayout card = (AbsoluteLayout)grid.Children[i];
+                StackLayout details = (StackLayout)card.Children[2];
+                StackLayout bottom = (StackLayout)details.Children[1];
+
+                Label nextEpisode = (Label)bottom.Children[0];
+                Ellipse ellipse = (Ellipse)bottom.Children[1];
+                Label progressLabel = (Label)bottom.Children[2];
+
+                if (progress < nextAiringEpisode - 1 && nextAiringEpisode > 1)
+                    ellipse.IsVisible = true;
+                else
+                    ellipse.IsVisible = false;
+
+                nextEpisode.Text = "Ep " + nextAiringEpisode + ": " + SecondsToString(timeUntilAiring);
+                progressLabel.Text = "" + progress + "/" + episodes;
             }
         }
 
@@ -146,7 +192,7 @@ namespace al_utils_app
                 return 0;
             var timeUntilAiring = (int)media.Details.Airing.TimeUntilAiring;
             var nextAiringEpisode = media.Details.Airing.Episode;
-            Console.Out.WriteLine("" + timeUntilAiring + ", " + nextAiringEpisode);
+            //Console.Out.WriteLine("" + timeUntilAiring + ", " + nextAiringEpisode);
 
             var progress = media.Progress;
             var mediaID = media.Details.Id;
@@ -165,6 +211,14 @@ namespace al_utils_app
             var imageURL = media.Details.Image.ExtraLarge;
             
             AbsoluteLayout abs = new AbsoluteLayout();
+
+            // tap events
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += async (s, e) =>
+            {
+                await Clipboard.SetTextAsync(title);
+            };
+            abs.GestureRecognizers.Add(tapGestureRecognizer);
 
             // background image
             Frame backgroundImg = new Frame()
@@ -207,8 +261,11 @@ namespace al_utils_app
                 Text = title,
                 FontSize = 18,
                 TextColor = Color.White,
-                FontFamily = "Jost"
+                FontFamily = "Jost",
+                LineBreakMode = LineBreakMode.TailTruncation,
+                MaxLines = 2
             };
+            // titleLabel.GestureRecognizers.Add(tapGestureRecognizer);
             StackLayout bottom = new StackLayout() { Orientation = StackOrientation.Horizontal, Spacing = 0 };
             bottom.Children.Add(new Label()
             {
@@ -218,19 +275,20 @@ namespace al_utils_app
                 TextColor = Color.White,
                 FontFamily = "Jost"
             });
-            
-            if (progress < nextAiringEpisode - 1 && nextAiringEpisode > 1)
+
+            Ellipse ellipse = new Ellipse()
             {
-                bottom.Children.Add(new Ellipse()
-                {
-                    Fill = new SolidColorBrush(IntColor(216, 70, 70)),
-                    HorizontalOptions = LayoutOptions.End,
-                    VerticalOptions = LayoutOptions.Center,
-                    Margin = 5,
-                    HeightRequest = 12,
-                    WidthRequest = 12
-                });
-            }
+                Fill = new SolidColorBrush(IntColor(216, 70, 70)),
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Center,
+                Margin = 5,
+                HeightRequest = 12,
+                WidthRequest = 12
+            };
+            if (!(progress < nextAiringEpisode - 1 && nextAiringEpisode > 1))
+                ellipse.IsVisible = false;
+            
+            bottom.Children.Add(ellipse);
 
             bottom.Children.Add(new Label()
             {
@@ -253,11 +311,18 @@ namespace al_utils_app
         {
             InitializeComponent();
             userIcon.Source = ImageSource.FromResource("al-utils-app.Images.user.png");
+
+            ICommand refreshCommand = new Command(() =>
+            {
+                UpdateData();
+                refreshView.IsRefreshing = false;
+            });
+            refreshView.Command = refreshCommand;
         }
 
         protected override async void OnAppearing()
         {
-            await GetData();
+            await CreateCards();
         }
 
         private int IsID(string s)
@@ -322,7 +387,7 @@ namespace al_utils_app
             currentUser = user.Name;
 
             // regenerate chart
-            await GetData();
+            await CreateCards();
             forUser.Text = "for @" + user.Name;
         }
 
