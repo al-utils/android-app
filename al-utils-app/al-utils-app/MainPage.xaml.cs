@@ -8,9 +8,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using static Xamarin.Essentials.Permissions;
-using System.Text.Json;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Xamarin.Forms.Shapes;
 using Xamarin.Essentials;
 using System.Windows.Input;
@@ -24,7 +21,7 @@ namespace al_utils_app
         private const int numCols = 2;
         private const int maxPages = 10; // idk
 
-        private string currentUser = "java";
+        private string currentUser = Preferences.Get("currentUser", "");
 
         // todo:
         // username
@@ -109,6 +106,7 @@ namespace al_utils_app
             // clear grid
             grid.Children.Clear();
             grid.RowDefinitions.Clear();
+            forUser.Text = "for @" + currentUser;
 
             var total = 0;
             foreach (Media media in mediaList)
@@ -310,7 +308,8 @@ namespace al_utils_app
         public MainPage()
         {
             InitializeComponent();
-            userIcon.Source = ImageSource.FromResource("al-utils-app.Images.user.png");
+            BindingContext = this;
+            searchIcon.Source = ImageSource.FromResource("al-utils-app.Images.search.png");
 
             ICommand refreshCommand = new Command(() =>
             {
@@ -322,7 +321,15 @@ namespace al_utils_app
 
         protected override async void OnAppearing()
         {
-            await CreateCards();
+            if (currentUser == "")
+            {
+                // search for user
+                await DisplaySearchUserPrompt(true);
+
+            } else
+            {
+                await CreateCards();
+            }
         }
 
         private int IsID(string s)
@@ -385,21 +392,25 @@ namespace al_utils_app
             Response data = JsonSerializer.Deserialize<Response>(jsonString);
             User user = data.Data.User;
             currentUser = user.Name;
+            Preferences.Set("currentUser", currentUser);
 
             // regenerate chart
             await CreateCards();
-            forUser.Text = "for @" + user.Name;
         }
 
-        private async void userIcon_Clicked(object sender, EventArgs e)
+        private async void searchIcon_Clicked(object sender, EventArgs e)
         {
             await DisplaySearchUserPrompt();
         }
 
-        private async Task DisplaySearchUserPrompt()
+        private async Task DisplaySearchUserPrompt(bool persist=false)
         {
             var result = await DisplayPromptAsync("Search for User", "Enter username or ID: ");
-            if (result != null && result != "")
+            if (persist && result == null && result != "")
+            {
+                await DisplaySearchUserPrompt(true);
+            }
+            else if (result != null && result != "")
             {
                 var x = IsID(result);
                 if (x != -1)
@@ -411,6 +422,11 @@ namespace al_utils_app
                     await SearchUserByUsername(result);
                 }
             }
+        }
+
+        private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            await DisplaySearchUserPrompt();
         }
     }
 }

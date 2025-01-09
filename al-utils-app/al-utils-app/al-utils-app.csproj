@@ -13,11 +13,13 @@
 
   <ItemGroup>
     <None Remove="Fonts\Jost-500-Medium.ttf" />
+    <None Remove="Images\search.png" />
     <None Remove="Images\user.png" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Fonts\Jost-500-Medium.ttf" />
+    <EmbeddedResource Include="Images\search.png" />
     <EmbeddedResource Include="Images\user.png" />
   </ItemGroup>
 

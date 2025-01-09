@@ -19,25 +19,30 @@
                        FontSize="28"
                        HorizontalOptions="Start"/>
                 <Label x:Name="forUser"
-                       Text="for @java"
+                       Text="for"
                        TextColor="#aaaaaa"
                        HeightRequest="40"
                        FontFamily="Jost"
                        TextTransform="Lowercase"
                        FontSize="28"
                        LineBreakMode="TailTruncation"
-                       HorizontalOptions="FillAndExpand"/>
-                <ImageButton x:Name="userIcon"
+                       HorizontalOptions="FillAndExpand">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <ImageButton x:Name="searchIcon"
                              HorizontalOptions="End"
                              VerticalOptions="Center"
-                             Aspect="Fill"
+                             Aspect="AspectFit"
                              BackgroundColor="Transparent"
-                             Padding="0"
+                             Padding="4"
                              Margin="0, 5, 5, 0"
                              CornerRadius="10"
                              WidthRequest="35"
                              HeightRequest="35"
-                             Clicked="userIcon_Clicked"/>
+                             Clicked="searchIcon_Clicked"/>
             </StackLayout>
         </Frame>
 
