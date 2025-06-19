@@ -1,16 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="al_utils_app.MainPage"
-             Background="Red">
+             BarBackgroundColor="#262524"
+             SelectedTabColor="White"
+             UnselectedTabColor="#888888"
+             NavigationPage.HasNavigationBar="True">
+    <TabbedPage.Resources>
+        <Style Class="seasonHeader" TargetType="Label">
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+        <Style Class="grid" TargetType="Grid">
+            <Setter Property="Padding" Value="15,15,15,100"/>
+            <Setter Property="ColumnSpacing" Value="15"/>
+            <Setter Property="RowSpacing" Value="15"/>
+            <Setter Property="VerticalOptions" Value="FillAndExpand"/>
+        </Style>
+    </TabbedPage.Resources>
 
-    <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
-
-        <Frame BackgroundColor="#141414" CornerRadius="0"
-               HeightRequest="25" Padding="0"/>
-
-        <Frame BackgroundColor="#262524" CornerRadius="0">
-            <StackLayout Orientation="Horizontal">
+    <NavigationPage.TitleView>
+        <StackLayout Spacing="0" Padding="0" VerticalOptions="End">
+            <!--
+            <Frame BackgroundColor="#141414" CornerRadius="0"
+                   HeightRequest="25" Padding="0"/>
+            <Frame BackgroundColor="#262524" CornerRadius="0">
+            -->
+            <StackLayout Orientation="Horizontal" BackgroundColor="Transparent" Padding="0,20,10,0">
                 <Label Text="Airing"
                        TextColor="White"
                        HeightRequest="40"
@@ -27,10 +42,12 @@
                        FontSize="28"
                        LineBreakMode="TailTruncation"
                        HorizontalOptions="FillAndExpand">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
-                    </Label.GestureRecognizers>
-                </Label>
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                <BoxView HorizontalOptions="FillAndExpand"/>
 
                 <ImageButton x:Name="searchIcon"
                              HorizontalOptions="End"
@@ -44,33 +61,54 @@
                              HeightRequest="35"
                              Clicked="searchIcon_Clicked"/>
             </StackLayout>
-        </Frame>
+        </StackLayout>
+    </NavigationPage.TitleView>
 
-        <RefreshView x:Name="refreshView"
-            IsRefreshing="{Binding IsRefreshing}"
+    <ContentPage Title="Releasing (14)">
+        <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
+            <RefreshView x:Name="refreshView"
+                     IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshCommand}">
-            <ScrollView>
-
-                <StackLayout>
-
-                    <Grid x:Name="grid"
-              Padding="20, 20, 20, 100"
-              ColumnSpacing="23"
-              RowSpacing="23"
-              VerticalOptions="FillAndExpand">
+                <ScrollView>
+                    <Grid x:Name="grid" StyleClass="grid">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <!--
-            <Grid.RowDefinitions>
-                <RowDefinition Height="320"/>
-                <RowDefinition Height="320"/>
-                <RowDefinition Height="320"/>
-                <RowDefinition Height="320"/>
-            </Grid.RowDefinitions>
-            -->
+                        <Grid.RowDefinitions>
+                        <RowDefinition Height="320"/>
+                        </Grid.RowDefinitions>
+                        -->
+                    </Grid>
+                </ScrollView>
+            </RefreshView>
+        </StackLayout>
+    </ContentPage>
 
+    <ContentPage Title="Not Yet Released (6)">
+        <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
+            <RefreshView x:Name="refreshView2"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}">
+                <ScrollView>
+                    <Grid x:Name="grid2" StyleClass="grid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <!--
+                        <Grid.RowDefinitions>
+                        <RowDefinition Height="320"/>
+                        </Grid.RowDefinitions>
+                        -->
+                    </Grid>
+                </ScrollView>
+            </RefreshView>
+        </StackLayout>
+    </ContentPage>
+
+</TabbedPage>
 
                         <!-- card -->
                         <!--
@@ -138,14 +176,3 @@
                    BackgroundColor="Lime">
             </Frame>
             -->
-                    </Grid>
-                </StackLayout>
-
-            </ScrollView>
-        </RefreshView>
-        
-        
-
-    </StackLayout>
-
-</ContentPage>

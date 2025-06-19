@@ -11,7 +11,7 @@ namespace al_utils_app
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new AndroidNavigationPage(new MainPage());
         }
 
         protected override void OnStart()

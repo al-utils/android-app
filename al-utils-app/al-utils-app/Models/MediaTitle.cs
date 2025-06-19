@@ -9,5 +9,7 @@ namespace al_utils_app
         public string English { get; set; }
         [JsonPropertyName("romaji")]
         public string Romaji { get; set; }
+        [JsonPropertyName("native")]
+        public string Native { get; set; }
     }
 }

@@ -18,5 +18,8 @@ namespace al_utils_app
         {
             return "data";
         }
+
+        [JsonPropertyName("Media")]
+        public MediaDetails Media { get; set; }
     }
 }

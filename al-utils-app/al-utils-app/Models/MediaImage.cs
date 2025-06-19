@@ -7,5 +7,7 @@ namespace al_utils_app
     {
         [JsonPropertyName("extraLarge")]
         public string ExtraLarge { get; set; }
+        [JsonPropertyName("color")]
+        public string Color { get; set; }
     }
 }

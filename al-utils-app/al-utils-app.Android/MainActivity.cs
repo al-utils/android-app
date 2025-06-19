@@ -21,9 +21,9 @@ namespace al_utils_app.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
-            Window.SetFlags(WindowManagerFlags.LayoutNoLimits, WindowManagerFlags.LayoutNoLimits);
-            Window.ClearFlags(WindowManagerFlags.TranslucentStatus);
-            Window.SetStatusBarColor(Android.Graphics.Color.Transparent);
+            //Window.SetFlags(WindowManagerFlags.LayoutNoLimits, WindowManagerFlags.LayoutNoLimits);
+            //Window.ClearFlags(WindowManagerFlags.TranslucentStatus);
+            //Window.SetStatusBarColor(Android.Graphics.Color.Transparent);
 
 
             LoadApplication(new App());

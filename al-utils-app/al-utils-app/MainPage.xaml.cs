@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace al_utils_app
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage : TabbedPage
     {
         private const string URL = "https://graphql.anilist.co";
         private static readonly HttpClient client = new HttpClient();
@@ -42,6 +42,7 @@ namespace al_utils_app
           english
           romaji
         }}
+        status
         episodes
         coverImage {{
           extraLarge
@@ -59,23 +60,16 @@ namespace al_utils_app
             return s + "}";
         }
 
+        private Dictionary<string, object> BuildVariables()
+        {
+            Dictionary<string, object> variables = new Dictionary<string, object>();
+            variables.Add("name", currentUser);
+            return variables;
+        }
+
         private async Task<List<Media>> GetData()
         {
-            Dictionary<string, string> json = new Dictionary<string, string>();
-            string query = BuildQuery();
-
-            json.Add("query", query);
-            Dictionary<string, string> variables = new Dictionary<string, string>();
-            variables.Add("name", currentUser);
-            json.Add("variables", JsonSerializer.Serialize(variables));
-            string jsonString = JsonSerializer.Serialize(json);
-
-            // request
-            var response = await client.PostAsync(URL, new StringContent(jsonString, Encoding.UTF8, "application/json"));
-            response.EnsureSuccessStatusCode();
-            jsonString = await response.Content.ReadAsStringAsync();
-
-            Response data = JsonSerializer.Deserialize<Response>(jsonString);
+            Response data = await Request.RequestDataAsync(BuildQuery(), BuildVariables());
 
             var dict = data.Data.Pages;
             List<Media> mediaList = new List<Media>();
@@ -106,21 +100,34 @@ namespace al_utils_app
             // clear grid
             grid.Children.Clear();
             grid.RowDefinitions.Clear();
+            grid2.Children.Clear();
+            grid2.RowDefinitions.Clear();
             forUser.Text = "for @" + currentUser;
 
+            // filter by status
+            List<Media> releasingList = mediaList.Where(x => x.Details.Status == "RELEASING").ToList();
+            List<Media> notYetReleasedList = mediaList.Where(x => x.Details.Status == "NOT_YET_RELEASED").ToList();
+
+            CreateCardGrid(releasingList, grid);
+            CreateCardGrid(notYetReleasedList, grid2);
+        }
+
+        private void CreateCardGrid(List<Media> list, Grid g)
+        {
             var total = 0;
-            foreach (Media media in mediaList)
+            foreach (Media media in list)
             {
                 var before = total;
-                total += MakeCard(total, media);
+                total += MakeCard(total, media, g);
 
                 if (total % numCols == 0 && total != before)
                 {
                     // add column
-                    grid.RowDefinitions.Add(new RowDefinition() { Height = 320 });
+                    g.RowDefinitions.Add(new RowDefinition() { Height = 320 });
                 }
             }
         }
+
 
         private async Task UpdateData()
         {
@@ -184,7 +191,7 @@ namespace al_utils_app
             return "" + d + "d" + h + "h";
         }
 
-        private int MakeCard(int id, Media media)
+        private int MakeCard(int id, Media media, Grid g)
         {
             if (media.Details.Airing == null)
                 return 0;
@@ -214,7 +221,8 @@ namespace al_utils_app
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += async (s, e) =>
             {
-                await Clipboard.SetTextAsync(title);
+                //await Clipboard.SetTextAsync(title);
+                await Application.Current.MainPage.Navigation.PushAsync(new MediaPage(mediaID));
             };
             abs.GestureRecognizers.Add(tapGestureRecognizer);
 
@@ -301,7 +309,7 @@ namespace al_utils_app
             abs.Children.Add(details);
 
             var (row, col) = IdToRowCol(id);
-            grid.Children.Add(abs, col, row);
+            g.Children.Add(abs, col, row);
             return 1;
         }
 
@@ -317,19 +325,30 @@ namespace al_utils_app
                 refreshView.IsRefreshing = false;
             });
             refreshView.Command = refreshCommand;
+
+            if (currentUser == "")
+            {
+                // search for user
+                DisplaySearchUserPrompt(true);
+
+            }
+            else
+            {
+                CreateCards();
+            }
         }
 
         protected override async void OnAppearing()
         {
-            if (currentUser == "")
-            {
-                // search for user
-                await DisplaySearchUserPrompt(true);
+            //if (currentUser == "")
+            //{
+            //    // search for user
+            //    await DisplaySearchUserPrompt(true);
 
-            } else
-            {
-                await CreateCards();
-            }
+            //} else
+            //{
+            //    await CreateCards();
+            //}
         }
 
         private int IsID(string s)
