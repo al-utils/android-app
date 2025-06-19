@@ -64,7 +64,7 @@
         </StackLayout>
     </NavigationPage.TitleView>
 
-    <ContentPage Title="Releasing (14)">
+    <ContentPage Title="{Binding ReleasingCount, StringFormat='Releasing ({0})'}">
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
             <RefreshView x:Name="refreshView"
                      IsRefreshing="{Binding IsRefreshing}"
@@ -86,7 +86,7 @@
         </StackLayout>
     </ContentPage>
 
-    <ContentPage Title="Not Yet Released (6)">
+    <ContentPage Title="{Binding NotYetReleasedCount, StringFormat='Not Yet Released ({0})'}">
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
             <RefreshView x:Name="refreshView2"
                      IsRefreshing="{Binding IsRefreshing}"

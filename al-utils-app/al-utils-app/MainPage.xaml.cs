@@ -67,7 +67,7 @@ namespace al_utils_app
             return variables;
         }
 
-        private async Task<List<Media>> GetData()
+        private async Task<List<Media>> GetData(string status = null)
         {
             Response data = await Request.RequestDataAsync(BuildQuery(), BuildVariables());
 
@@ -91,6 +91,10 @@ namespace al_utils_app
                                  .ToList();
 
             Console.Out.WriteLine("MediaList Count: " + mediaList.Count);
+
+            if (status == "RELEASING" || status == "NOT_YET_RELEASED")
+                return mediaList.Where(x => x.Details.Status == status).ToList();
+
             return mediaList;
         }
 
@@ -104,9 +108,12 @@ namespace al_utils_app
             grid2.RowDefinitions.Clear();
             forUser.Text = "for @" + currentUser;
 
-            // filter by status
+            // filter by status(x => x.Details.Statuse
             List<Media> releasingList = mediaList.Where(x => x.Details.Status == "RELEASING").ToList();
             List<Media> notYetReleasedList = mediaList.Where(x => x.Details.Status == "NOT_YET_RELEASED").ToList();
+
+            ReleasingCount = releasingList.Count;
+            NotYetReleasedCount = notYetReleasedList.Count;
 
             CreateCardGrid(releasingList, grid);
             CreateCardGrid(notYetReleasedList, grid2);
@@ -129,16 +136,20 @@ namespace al_utils_app
         }
 
 
-        private async Task UpdateData()
+        private async Task UpdateData(Grid g)
         {
-            if (grid.Children.Count == 0)
+            if (g.Children.Count == 0)
             {
                 await CreateCards();
                 return;
             }
 
-            List<Media> mediaList = await GetData();
-            for (int i = 0; i < grid.Children.Count; i++)
+            var page = "RELEASING";
+            if (g == grid2)
+                page = "NOT_YET_RELEASED";
+
+            List<Media> mediaList = await GetData(page);
+            for (int i = 0; i < g.Children.Count; i++)
             {
                 Media media = mediaList[i];
                 var timeUntilAiring = (int)media.Details.Airing.TimeUntilAiring;
@@ -150,7 +161,7 @@ namespace al_utils_app
                 else
                     episodes = "" + media.Details.Episodes;
 
-                AbsoluteLayout card = (AbsoluteLayout)grid.Children[i];
+                AbsoluteLayout card = (AbsoluteLayout)g.Children[i];
                 StackLayout details = (StackLayout)card.Children[2];
                 StackLayout bottom = (StackLayout)details.Children[1];
 
@@ -167,6 +178,30 @@ namespace al_utils_app
                 progressLabel.Text = "" + progress + "/" + episodes;
             }
         }
+
+        private int releasingCount;
+        public int ReleasingCount
+        {
+            get { return releasingCount; }
+            set
+            {
+                releasingCount = value;
+                OnPropertyChanged(nameof(ReleasingCount));
+            }
+        }
+
+        private int notYetReleasedCount;
+        public int NotYetReleasedCount
+        {
+            get { return notYetReleasedCount; }
+            set
+            {
+                notYetReleasedCount = value;
+                OnPropertyChanged(nameof(NotYetReleasedCount));
+            }
+        }
+
+
 
         private (int, int) IdToRowCol(int id)
         {
@@ -321,10 +356,16 @@ namespace al_utils_app
 
             ICommand refreshCommand = new Command(() =>
             {
-                UpdateData();
+                UpdateData(grid);
                 refreshView.IsRefreshing = false;
             });
+            ICommand refreshCommand2 = new Command(() =>
+            {
+                UpdateData(grid2);
+                refreshView2.IsRefreshing = false;
+            });
             refreshView.Command = refreshCommand;
+            refreshView2.Command = refreshCommand2;
 
             if (currentUser == "")
             {
