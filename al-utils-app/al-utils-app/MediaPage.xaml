@@ -71,11 +71,12 @@
                                  Orientation="Horizontal">
                         <Frame CornerRadius="10"
                                Padding="0">
-                            <Image x:Name="cover" 
-                                   Source="{Binding CoverImageURL}"
-                                   Aspect="AspectFill"
-                                   BackgroundColor="#181716"
-                                   WidthRequest="125"/>
+                            <ImageButton x:Name="cover" 
+                                         Source="{Binding CoverImageURL}"
+                                         Aspect="AspectFill"
+                                         BackgroundColor="#181716"
+                                         WidthRequest="125"
+                                         Clicked="cover_Clicked"/>
                         </Frame>
                         <Label x:Name="titleLabel"
                                Text="{Binding Title}"

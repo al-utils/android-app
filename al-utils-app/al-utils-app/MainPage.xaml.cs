@@ -106,7 +106,7 @@ namespace al_utils_app
             grid.RowDefinitions.Clear();
             grid2.Children.Clear();
             grid2.RowDefinitions.Clear();
-            forUser.Text = "for @" + currentUser;
+            ForUser = currentUser;
 
             // filter by status(x => x.Details.Statuse
             List<Media> releasingList = mediaList.Where(x => x.Details.Status == "RELEASING").ToList();
@@ -117,6 +117,17 @@ namespace al_utils_app
 
             CreateCardGrid(releasingList, grid);
             CreateCardGrid(notYetReleasedList, grid2);
+        }
+
+        private string forUser;
+        public string ForUser
+        {
+            get { return forUser; }
+            set
+            {
+                forUser = value;
+                OnPropertyChanged(nameof(ForUser));
+            }
         }
 
         private void CreateCardGrid(List<Media> list, Grid g)

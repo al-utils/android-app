@@ -25,27 +25,41 @@
                    HeightRequest="25" Padding="0"/>
             <Frame BackgroundColor="#262524" CornerRadius="0">
             -->
-            <StackLayout Orientation="Horizontal" BackgroundColor="Transparent" Padding="0,20,10,0">
+            <StackLayout Orientation="Horizontal" BackgroundColor="Transparent" Padding="5,20,10,0">
                 <Label Text="Airing"
                        TextColor="White"
                        HeightRequest="40"
-                       Margin="5, 0"
+                       Margin="0,0,5,0"
                        FontFamily="Jost"
                        FontSize="28"
                        HorizontalOptions="Start"/>
-                <Label x:Name="forUser"
-                       Text="for"
-                       TextColor="#aaaaaa"
+                <Label Text="for"
                        HeightRequest="40"
+                       Margin="0,0,5,0"
+                       TextColor="#aaaaaa"
                        FontFamily="Jost"
-                       TextTransform="Lowercase"
-                       FontSize="28"
-                       LineBreakMode="TailTruncation"
-                       HorizontalOptions="FillAndExpand">
+                       FontSize="28"/>
+                <!--<AbsoluteLayout>
+                    <BoxView BackgroundColor="#aaaaaa" HeightRequest="3"
+                             Margin="0"
+                             AbsoluteLayout.LayoutFlags="WidthProportional"
+                             AbsoluteLayout.LayoutBounds="0,37,1,3"/>
+                -->
+                    <Label Text="{Binding ForUser, StringFormat='@{0}'}"
+                           TextColor="#aaaaaa"
+                           HeightRequest="40"
+                           FontFamily="Jost"
+                           TextTransform="Lowercase"
+                           FontSize="28"
+                           LineBreakMode="TailTruncation"
+                           HorizontalOptions="FillAndExpand"
+                           Margin="0"
+                           Padding="0">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                         </Label.GestureRecognizers>
                     </Label>
+                <!--</AbsoluteLayout>-->
 
                 <BoxView HorizontalOptions="FillAndExpand"/>
 

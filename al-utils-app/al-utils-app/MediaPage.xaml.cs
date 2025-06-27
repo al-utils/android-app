@@ -70,6 +70,12 @@ namespace al_utils_app
             await Navigation.PopAsync();
         }
 
+        private async void cover_Clicked(object sender, EventArgs e)
+        {
+            ImageSource imageSource = ((ImageButton)sender).Source;
+            await Navigation.PushAsync(new ImagePage(imageSource));
+        }
+
         private async Task<MediaDetails> GetData()
         {
             Response data = await Request.RequestDataAsync(query, BuildVariables());
