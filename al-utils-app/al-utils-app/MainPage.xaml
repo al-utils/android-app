@@ -79,6 +79,7 @@
     </NavigationPage.TitleView>
 
     <ContentPage Title="{Binding ReleasingCount, StringFormat='Releasing ({0})'}">
+
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
             <RefreshView x:Name="refreshView"
                      IsRefreshing="{Binding IsRefreshing}"
@@ -94,10 +95,6 @@
                         <RowDefinition Height="320"/>
                         </Grid.RowDefinitions>
                         -->
-                        <StackLayout HorizontalOptions="Center" Grid.ColumnSpan="2">
-                            <Image Source="mio.png"/>
-                            <Label Text="So Empty..." FontFamily="Jost" TextColor="#262524" FontSize="20"/>
-                        </StackLayout>
                     </Grid>
                 </ScrollView>
             </RefreshView>

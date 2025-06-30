@@ -402,6 +402,9 @@ namespace al_utils_app
         {
             InitializeComponent();
             BindingContext = this;
+            //TEMP
+            Navigation.PushAsync(new SearchPage());
+
             menuIcon.Source = ImageSource.FromResource("al-utils-app.Images.menu.png");
 
             ICommand refreshCommand = new Command(() =>

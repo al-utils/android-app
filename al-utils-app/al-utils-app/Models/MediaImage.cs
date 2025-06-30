@@ -9,5 +9,10 @@ namespace al_utils_app
         public string ExtraLarge { get; set; }
         [JsonPropertyName("color")]
         public string Color { get; set; }
+
+        public override string ToString()
+        {
+            return ExtraLarge;
+        }
     }
 }
