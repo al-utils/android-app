@@ -26,6 +26,9 @@ namespace al_utils_app
         // todo:
         // username
         // options?
+        // ignore
+        // completed but current
+        // full schedule
         
         public string BuildQuery()
         {
@@ -102,21 +105,32 @@ namespace al_utils_app
         {
             List<Media> mediaList = await GetData();
             // clear grid
-            grid.Children.Clear();
-            grid.RowDefinitions.Clear();
-            grid2.Children.Clear();
-            grid2.RowDefinitions.Clear();
+            releasedGrid.Children.Clear();
+            releasedGrid.RowDefinitions.Clear();
+            notYetReleasedGrid.Children.Clear();
+            notYetReleasedGrid.RowDefinitions.Clear();
             ForUser = currentUser;
 
-            // filter by status(x => x.Details.Statuse
-            List<Media> releasingList = mediaList.Where(x => x.Details.Status == "RELEASING").ToList();
-            List<Media> notYetReleasedList = mediaList.Where(x => x.Details.Status == "NOT_YET_RELEASED").ToList();
+            // filter by status
+            List<Media> releasingList = mediaList.Where(x => x.Details.Status == "RELEASING")
+                                                 .Where(x => x.Details.Airing != null)
+                                                 .ToList();
+            List<Media> notYetReleasedList = mediaList.Where(x => x.Details.Status == "NOT_YET_RELEASED")
+                                                      .Where(x => x.Details.Airing != null)
+                                                      .ToList();
 
             ReleasingCount = releasingList.Count;
             NotYetReleasedCount = notYetReleasedList.Count;
 
-            CreateCardGrid(releasingList, grid);
-            CreateCardGrid(notYetReleasedList, grid2);
+            if (releasingList.Count == 0)
+                CreateEmptyGrid(releasedGrid);
+            else
+                CreateCardGrid(releasingList, releasedGrid);
+
+            if (notYetReleasedList.Count == 0)
+                CreateEmptyGrid(notYetReleasedGrid);
+            else
+                CreateCardGrid(notYetReleasedList, notYetReleasedGrid);
         }
 
         private string forUser;
@@ -130,19 +144,44 @@ namespace al_utils_app
             }
         }
 
+        private void CreateEmptyGrid(Grid g)
+        {
+            StackLayout stack = new StackLayout
+            {
+                WidthRequest=200, 
+                HorizontalOptions=LayoutOptions.Center, 
+                Padding=new Thickness(0, 30, 0, 0)
+            };
+            Image image = new Image { Source = ImageSource.FromResource("al-utils-app.Images.mio.png"), };
+            Label text = new Label
+            {
+                Text="So Empty...", 
+                FontFamily="Jost", 
+                FontSize=20,
+                TextColor = new Color(38.0/255, 37.0/255, 36.0/255),
+                HorizontalOptions=LayoutOptions.Center
+            };
+
+            stack.Children.Add(image);
+            stack.Children.Add(text);
+
+            g.RowDefinitions.Add(new RowDefinition() { Height = 320 });
+            g.Children.Add(stack, 0, 2, 0, 1);
+        }
+
+
         private void CreateCardGrid(List<Media> list, Grid g)
         {
             var total = 0;
             foreach (Media media in list)
             {
-                var before = total;
-                total += MakeCard(total, media, g);
-
-                if (total % numCols == 0 && total != before)
+                MakeCard(total, media, g);
+                if (total % numCols == 0)
                 {
                     // add column
                     g.RowDefinitions.Add(new RowDefinition() { Height = 320 });
                 }
+                total++;
             }
         }
 
@@ -156,7 +195,7 @@ namespace al_utils_app
             }
 
             var page = "RELEASING";
-            if (g == grid2)
+            if (g == notYetReleasedGrid)
                 page = "NOT_YET_RELEASED";
 
             List<Media> mediaList = await GetData(page);
@@ -237,10 +276,11 @@ namespace al_utils_app
             return "" + d + "d" + h + "h";
         }
 
-        private int MakeCard(int id, Media media, Grid g)
+        private void MakeCard(int id, Media media, Grid g)
         {
             if (media.Details.Airing == null)
-                return 0;
+                return;
+
             var timeUntilAiring = (int)media.Details.Airing.TimeUntilAiring;
             var nextAiringEpisode = media.Details.Airing.Episode;
             //Console.Out.WriteLine("" + timeUntilAiring + ", " + nextAiringEpisode);
@@ -356,23 +396,22 @@ namespace al_utils_app
 
             var (row, col) = IdToRowCol(id);
             g.Children.Add(abs, col, row);
-            return 1;
         }
 
         public MainPage()
         {
             InitializeComponent();
             BindingContext = this;
-            searchIcon.Source = ImageSource.FromResource("al-utils-app.Images.search.png");
+            menuIcon.Source = ImageSource.FromResource("al-utils-app.Images.menu.png");
 
             ICommand refreshCommand = new Command(() =>
             {
-                UpdateData(grid);
+                UpdateData(releasedGrid);
                 refreshView.IsRefreshing = false;
             });
             ICommand refreshCommand2 = new Command(() =>
             {
-                UpdateData(grid2);
+                UpdateData(notYetReleasedGrid);
                 refreshView2.IsRefreshing = false;
             });
             refreshView.Command = refreshCommand;
@@ -469,9 +508,21 @@ namespace al_utils_app
             await CreateCards();
         }
 
-        private async void searchIcon_Clicked(object sender, EventArgs e)
+        private async void menuIcon_Clicked(object sender, EventArgs e)
         {
-            await DisplaySearchUserPrompt();
+            var result = await DisplayActionSheet("Menu", "Cancel", null, "Change User", "Search Media", "Settings");
+            Console.WriteLine(result);
+            switch (result)
+            {
+                case "Cancel":
+                    break;
+                case "Change User":
+                    await DisplaySearchUserPrompt();
+                    break;
+                case "Search Media":
+                    await Navigation.PushAsync(new SearchPage());
+                    break;
+            }
         }
 
         private async Task DisplaySearchUserPrompt(bool persist=false)

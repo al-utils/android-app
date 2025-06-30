@@ -6,8 +6,6 @@ namespace al_utils_app
 {
     internal class MediaDetails
     {
-        private string format;
-
         [JsonPropertyName("id")]
         public int Id { get; set; }
         [JsonPropertyName("title")]

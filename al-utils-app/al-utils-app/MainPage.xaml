@@ -25,7 +25,7 @@
                    HeightRequest="25" Padding="0"/>
             <Frame BackgroundColor="#262524" CornerRadius="0">
             -->
-            <StackLayout Orientation="Horizontal" BackgroundColor="Transparent" Padding="5,20,10,0">
+            <StackLayout Orientation="Horizontal" BackgroundColor="Transparent" Padding="5,20,15,0">
                 <Label Text="Airing"
                        TextColor="White"
                        HeightRequest="40"
@@ -63,7 +63,7 @@
 
                 <BoxView HorizontalOptions="FillAndExpand"/>
 
-                <ImageButton x:Name="searchIcon"
+                <ImageButton x:Name="menuIcon"
                              HorizontalOptions="End"
                              VerticalOptions="Center"
                              Aspect="AspectFit"
@@ -73,7 +73,7 @@
                              CornerRadius="10"
                              WidthRequest="35"
                              HeightRequest="35"
-                             Clicked="searchIcon_Clicked"/>
+                             Clicked="menuIcon_Clicked"/>
             </StackLayout>
         </StackLayout>
     </NavigationPage.TitleView>
@@ -84,7 +84,7 @@
                      IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshCommand}">
                 <ScrollView>
-                    <Grid x:Name="grid" StyleClass="grid">
+                    <Grid x:Name="releasedGrid" StyleClass="grid">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
@@ -94,6 +94,10 @@
                         <RowDefinition Height="320"/>
                         </Grid.RowDefinitions>
                         -->
+                        <StackLayout HorizontalOptions="Center" Grid.ColumnSpan="2">
+                            <Image Source="mio.png"/>
+                            <Label Text="So Empty..." FontFamily="Jost" TextColor="#262524" FontSize="20"/>
+                        </StackLayout>
                     </Grid>
                 </ScrollView>
             </RefreshView>
@@ -106,7 +110,7 @@
                      IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshCommand}">
                 <ScrollView>
-                    <Grid x:Name="grid2" StyleClass="grid">
+                    <Grid x:Name="notYetReleasedGrid" StyleClass="grid">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
