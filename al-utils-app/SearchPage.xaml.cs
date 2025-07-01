@@ -27,6 +27,7 @@ namespace al_utils_app
         english
         native
       }},
+        description,
       coverImage {{
         extraLarge
         color
@@ -54,17 +55,26 @@ namespace al_utils_app
 			InitializeComponent ();
         }
 
-        private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
+        private async void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
         {
-			var search = searchbar.Text;
-			if (search.Length >= 2) { SearchForMedia(search); }
+            string prev = searchbar.Text;
+
+            if (prev == "" || prev == null)
+                Results.Clear();
+
+            await Task.Delay(500);
+
+            string now = searchbar.Text;
+            if (prev == now && now.Length >= 2) // stopped typing after delay
+			    SearchForMedia(now);
         }
+
 
         private void searchbar_SearchButtonPressed(object sender, EventArgs e)
         {
 			var search = searchbar.Text;
-			if (search.Length == 0) { return; }
-			SearchForMedia(search);
+			if (search.Length == 1) // manually search if one char
+			    SearchForMedia(search);
         }
 
         private ObservableCollection<SearchResult> Results { get; set; } = new ObservableCollection<SearchResult>();
@@ -74,11 +84,11 @@ namespace al_utils_app
             List<SearchResult> results = await GetData(search);
             Results = new ObservableCollection<SearchResult>(results);
 
-            Console.WriteLine(Results.Count);
-            foreach (var d in results)
-            {
-                Console.WriteLine(d.Id);
-            }
+            //Console.WriteLine(Results.Count);
+            //foreach (var d in results)
+            //{
+            //    Console.WriteLine(d.Id);
+            //}
             resultList.ItemsSource = Results;
 		}
 

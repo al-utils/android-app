@@ -22,9 +22,6 @@ namespace al_utils_app.Models
                 OnPropertyChanged();
             }
         }
-        //public int Id { get; set; }
-
-
 
         private MediaTitle title;
         [JsonPropertyName("title")]
@@ -37,7 +34,6 @@ namespace al_utils_app.Models
                 OnPropertyChanged();
             }
         }
-        //public MediaTitle Title { get; set; }
 
         private MediaImage image;
         [JsonPropertyName("coverImage")]
@@ -50,7 +46,31 @@ namespace al_utils_app.Models
                 OnPropertyChanged();
             }
         }
-        //public MediaImage Image { get; set; }
+
+        private string description;
+        [JsonPropertyName("description")]
+        public string Description
+        {
+            get
+            {
+                if (description == null || description == "")
+                    return "(no description)";
+                var s = description.Replace("</", "<");
+                s = s.Replace("<b>", "<i>");
+
+                Console.WriteLine(s);
+                s = string.Join( "", s.Split( new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries ));
+                s = string.Join( "<br>", s.Split( new string[] { "<br>" }, StringSplitOptions.RemoveEmptyEntries ));
+                s = s.Replace("<br>", "\n");
+                s = s.Replace("<i>", "");
+                return s;
+            }
+            set 
+            { 
+                description = value;
+                OnPropertyChanged();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

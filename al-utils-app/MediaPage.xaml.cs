@@ -88,8 +88,10 @@ namespace al_utils_app
             return s[0] + s.Substring(1).ToLower();
         }
 
-        private FormattedString FormatString(string s)
+        internal static FormattedString FormatString(string s)
         {
+            if (s == null || s == "")
+                return "(no description)";
             //s = s.Replace("<br>", "\n");
             s = s.Replace("</", "<");
             s = s.Replace("<b>", "<i>");

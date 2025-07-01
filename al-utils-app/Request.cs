@@ -26,7 +26,9 @@ namespace al_utils_app
 
             // request
             var response = await client.PostAsync(URL, new StringContent(jsonString, Encoding.UTF8, "application/json"));
-            response.EnsureSuccessStatusCode();
+            //response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode)
+                return null;
             jsonString = await response.Content.ReadAsStringAsync();
 
             Response data = JsonSerializer.Deserialize<Response>(jsonString);
