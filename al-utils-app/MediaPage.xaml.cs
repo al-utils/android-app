@@ -351,7 +351,10 @@ namespace al_utils_app
             }
         }
 
-
-
-	}
+        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            var title = ((Label)sender).Text;
+            Clipboard.SetTextAsync(title);
+        }
+    }
 }

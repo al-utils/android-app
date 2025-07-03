@@ -85,7 +85,12 @@
                                FontSize="25"
                                FontFamily="Jost"
                                Margin="5,0,0,35"
-                               LineHeight="0.75"/>
+                               LineHeight="0.75">
+                            <Label.GestureRecognizers>
+                                <!-- copy title to clipboard -->
+                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
 
                     </StackLayout>
 

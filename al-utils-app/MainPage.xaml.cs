@@ -11,6 +11,7 @@ using static Xamarin.Essentials.Permissions;
 using Xamarin.Forms.Shapes;
 using Xamarin.Essentials;
 using System.Windows.Input;
+using MultiGestureViewPlugin;
 
 namespace al_utils_app
 {
@@ -300,17 +301,41 @@ namespace al_utils_app
             else
                 episodes = "" + media.Details.Episodes;
             var imageURL = media.Details.Image.ExtraLarge;
-            
-            AbsoluteLayout abs = new AbsoluteLayout();
 
-            // tap events
-            var tapGestureRecognizer = new TapGestureRecognizer();
-            tapGestureRecognizer.Tapped += async (s, e) =>
+
+
+            // begin layout
+
+            MultiGestureView gestureView = new MultiGestureView()
             {
-                //await Clipboard.SetTextAsync(title);
+                VibrateOnTap = false,
+                VibrateOnLongPress = true,
+            };
+
+            // events
+            gestureView.Tapped += async (s, e) =>
+            {
                 await Application.Current.MainPage.Navigation.PushAsync(new MediaPage(mediaID));
             };
-            abs.GestureRecognizers.Add(tapGestureRecognizer);
+
+            gestureView.LongPressed += async (s, e) =>
+            {
+                var result = await DisplayActionSheet("Options", "Cancel", null, "Copy Title", "Hide");
+                switch (result)
+                {
+                    case "Cancel":
+                        break;
+                    case "Copy Title":
+                        await Clipboard.SetTextAsync(title);
+                        break;
+                    case "Hide":
+                        break;
+                }
+            };
+
+
+            
+            AbsoluteLayout abs = new AbsoluteLayout();
 
             // background image
             Frame backgroundImg = new Frame()
@@ -393,9 +418,10 @@ namespace al_utils_app
             details.Children.Add(titleLabel);
             details.Children.Add(bottom);
             abs.Children.Add(details);
+            gestureView.Content = abs;
 
             var (row, col) = IdToRowCol(id);
-            g.Children.Add(abs, col, row);
+            g.Children.Add(gestureView, col, row);
         }
 
         public MainPage()
