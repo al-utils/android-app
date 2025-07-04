@@ -9,12 +9,11 @@ using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace al_utils_app
+namespace al_utils_app.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class SearchPage : ContentPage
 	{
-        //TODO: search by id
         private int currPage = 0;
         public string BuildQuery(int page)
         {
@@ -43,7 +42,7 @@ namespace al_utils_app
             variables.Add("search", search);
             return variables;
         }
-        private async Task<List<SearchResult>> GetData(string search)
+        private async Task<List<MediaDetails>> GetData(string search)
         {
             Response data = await Request.RequestDataAsync(BuildQuery(currPage), BuildVariables(search));
             var dict = data.Data.Page.Results;
@@ -53,6 +52,7 @@ namespace al_utils_app
 		public SearchPage ()
 		{
 			InitializeComponent ();
+            backIcon.Source = ImageSource.FromResource("al_utils_app.Images.arrow-left.png");
         }
 
         private async void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
@@ -77,12 +77,12 @@ namespace al_utils_app
 			    SearchForMedia(search);
         }
 
-        private ObservableCollection<SearchResult> Results { get; set; } = new ObservableCollection<SearchResult>();
+        private ObservableCollection<MediaDetails> Results { get; set; } = new ObservableCollection<MediaDetails>();
 
 		private async void SearchForMedia(string search)
 		{
-            List<SearchResult> results = await GetData(search);
-            Results = new ObservableCollection<SearchResult>(results);
+            List<MediaDetails> results = await GetData(search);
+            Results = new ObservableCollection<MediaDetails>(results);
 
             //Console.WriteLine(Results.Count);
             //foreach (var d in results)
@@ -96,6 +96,11 @@ namespace al_utils_app
         {
             var id = (int)((TappedEventArgs)e).Parameter;
             await Navigation.PushAsync(new MediaPage(id));
+        }
+
+        private async void backIcon_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PopAsync();
         }
     }
 }

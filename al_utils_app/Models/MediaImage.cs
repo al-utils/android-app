@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace al_utils_app
+namespace al_utils_app.Models
 {
     internal class MediaImage
     {

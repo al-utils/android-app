@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="al_utils_app.SearchPage"
+             x:Class="al_utils_app.Views.SearchPage"
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
         <StackLayout BackgroundColor="#c6c3bb" Spacing="0">
@@ -9,10 +9,19 @@
             <!--header-->
             <StackLayout Spacing="0" Padding="0" VerticalOptions="End" BackgroundColor="#262524">
                 <StackLayout Orientation="Vertical" BackgroundColor="#262524" Padding="25,15,25,10" Margin="0">
-                    <Label Text="Search"
-                           TextColor="White" 
-                           FontFamily="Jost" 
-                           FontSize="28"/>
+                    <StackLayout Orientation="Horizontal" Padding="0" Margin="0">
+                        <ImageButton x:Name="backIcon" 
+                                     WidthRequest="30"
+                                     Aspect="AspectFit" 
+                                     BackgroundColor="Transparent" 
+                                     CornerRadius="10" 
+                                     Clicked="backIcon_Clicked"/>
+                        <Label Text="Search"
+                               Margin="15,0,0,0"
+                               TextColor="White" 
+                               FontFamily="Jost" 
+                               FontSize="28"/>
+                    </StackLayout>
                     <Frame BackgroundColor="White" 
                            CornerRadius="100" 
                            Margin="0" 
@@ -31,6 +40,7 @@
             </StackLayout>
 
 
+            <!-- results -->
             <ListView x:Name="resultList" ItemsSource="{Binding Results}" RowHeight="170">
                 <ListView.Header>
                     <Frame HeightRequest="25" BackgroundColor="Transparent" Margin="0" Padding="0"/>
@@ -52,7 +62,7 @@
                                                FontSize="20"
                                                MaxLines="2"
                                                LineBreakMode="TailTruncation"/>
-                                        <Label Text="{Binding Description}"
+                                        <Label Text="{Binding DescriptionSearchFormat}"
                                                TextColor="#c6c3bb"
                                                FontFamily="Jost"
                                                FontSize="14"

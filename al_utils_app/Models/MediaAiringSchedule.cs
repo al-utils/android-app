@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace al_utils_app
+namespace al_utils_app.Models
 {
     internal class MediaAiringSchedule
     {

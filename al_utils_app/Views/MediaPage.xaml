@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="al_utils_app.MediaPage"
+             x:Class="al_utils_app.Views.MediaPage"
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Resources>
         <Style Class="info" TargetType="Label">
@@ -60,11 +60,9 @@
                     <ImageButton x:Name="backIcon" 
                                  Aspect="AspectFit" 
                                  BackgroundColor="Transparent" 
-                                 Padding="4" 
-                                 Margin="0, 5, 5, 0" 
                                  CornerRadius="10" 
                                  Clicked="backIcon_Clicked"
-                                 AbsoluteLayout.LayoutBounds="10,7,50,50"/>
+                                 AbsoluteLayout.LayoutBounds="25,25,30,30"/>
                     <StackLayout AbsoluteLayout.LayoutBounds="0,70,1,180"
                                  AbsoluteLayout.LayoutFlags="WidthProportional,XProportional"
                                  Margin="15,0"

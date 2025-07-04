@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Xamarin.Forms;
 
-namespace al_utils_app
+namespace al_utils_app.Models
 {
     internal class ResponseData
     {

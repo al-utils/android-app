@@ -2,6 +2,7 @@
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using al_utils_app;
+using al_utils_app.Views;
 
 namespace al_utils_app
 {

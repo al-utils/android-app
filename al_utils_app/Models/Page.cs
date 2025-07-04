@@ -8,6 +8,6 @@ namespace al_utils_app.Models
     internal class Page
     {
         [JsonPropertyName("media")]
-        public List<SearchResult> Results { get; set; }
+        public List<MediaDetails> Results { get; set; }
     }
 }

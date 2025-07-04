@@ -1,4 +1,5 @@
-﻿using System;
+﻿using al_utils_app.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -8,7 +9,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace al_utils_app
+namespace al_utils_app.Views
 {
     public partial class MediaPage : ContentPage
     {
@@ -61,7 +62,7 @@ namespace al_utils_app
             this.mediaID = mediaID;
             InitializeComponent();
             BindingContext = this;
-            backIcon.Source = ImageSource.FromResource("al-utils-app.Images.arrow-left.png");
+            backIcon.Source = ImageSource.FromResource("al_utils_app.Images.arrow-left.png");
 
             FillData();
         }
@@ -88,47 +89,11 @@ namespace al_utils_app
             return s[0] + s.Substring(1).ToLower();
         }
 
-        internal static FormattedString FormatString(string s)
-        {
-            if (s == null || s == "")
-                return "(no description)";
-            //s = s.Replace("<br>", "\n");
-            s = s.Replace("</", "<");
-            s = s.Replace("<b>", "<i>");
-
-            Console.WriteLine(s);
-            s = string.Join( "", s.Split( new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries ));
-            s = string.Join( "<br>", s.Split( new string[] { "<br>" }, StringSplitOptions.RemoveEmptyEntries ));
-            s = s.Replace("<br>", "\n\n");
-            Console.WriteLine(s);
-
-            var parts = s.Split(new string[] { "<i>" }, StringSplitOptions.RemoveEmptyEntries);
-
-            FormattedString fs = new FormattedString();
-            for (var i = 0; i < parts.Length; i++)
-            {
-                if (i % 2 == 0)
-                    fs.Spans.Add(new Span { Text = parts[i] });
-                else
-                    fs.Spans.Add(new Span
-                    {
-                        Text = parts[i],
-                        FontAttributes = FontAttributes.Italic,
-                        FontFamily = "JostItalic",
-                        FontSize = 16
-                    });
-            }
-
-            return fs;
-        }
-
         private async Task FillData()
         {
             MediaDetails details = await GetData();
 
-            //var format = details.GetFormat();
-
-            Description = FormatString(details.Description);
+            Description = details.DescriptionFullFormat;
             if (details.BannerImage != null)
                 BannerImageURL = details.BannerImage;
             else

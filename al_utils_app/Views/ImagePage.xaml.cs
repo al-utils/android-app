@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace al_utils_app
+namespace al_utils_app.Views
 {
     public partial class ImagePage : ContentPage
     {

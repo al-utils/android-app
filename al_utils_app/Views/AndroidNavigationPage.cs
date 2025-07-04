@@ -5,7 +5,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific.AppCompat;
 
-namespace al_utils_app
+namespace al_utils_app.Views
 {
     class AndroidNavigationPage : Xamarin.Forms.NavigationPage
     {

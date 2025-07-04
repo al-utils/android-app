@@ -12,8 +12,9 @@ using Xamarin.Forms.Shapes;
 using Xamarin.Essentials;
 using System.Windows.Input;
 using MultiGestureViewPlugin;
+using al_utils_app.Models;
 
-namespace al_utils_app
+namespace al_utils_app.Views
 {
     public partial class MainPage : TabbedPage
     {
@@ -71,12 +72,12 @@ namespace al_utils_app
             return variables;
         }
 
-        private async Task<List<Media>> GetData(string status = null)
+        private async Task<List<MediaListEntry>> GetData(string status = null)
         {
             Response data = await Request.RequestDataAsync(BuildQuery(), BuildVariables());
 
             var dict = data.Data.Pages;
-            List<Media> mediaList = new List<Media>();
+            List<MediaListEntry> mediaList = new List<MediaListEntry>();
 
             // combine into one list
             foreach (KeyValuePair<string, object> page in dict)
@@ -104,7 +105,7 @@ namespace al_utils_app
 
         private async Task CreateCards()
         {
-            List<Media> mediaList = await GetData();
+            List<MediaListEntry> mediaList = await GetData();
             // clear grid
             releasedGrid.Children.Clear();
             releasedGrid.RowDefinitions.Clear();
@@ -113,10 +114,10 @@ namespace al_utils_app
             ForUser = currentUser;
 
             // filter by status
-            List<Media> releasingList = mediaList.Where(x => x.Details.Status == "RELEASING")
+            List<MediaListEntry> releasingList = mediaList.Where(x => x.Details.Status == "RELEASING")
                                                  .Where(x => x.Details.Airing != null)
                                                  .ToList();
-            List<Media> notYetReleasedList = mediaList.Where(x => x.Details.Status == "NOT_YET_RELEASED")
+            List<MediaListEntry> notYetReleasedList = mediaList.Where(x => x.Details.Status == "NOT_YET_RELEASED")
                                                       .Where(x => x.Details.Airing != null)
                                                       .ToList();
 
@@ -153,7 +154,7 @@ namespace al_utils_app
                 HorizontalOptions=LayoutOptions.Center, 
                 Padding=new Thickness(0, 30, 0, 0)
             };
-            Image image = new Image { Source = ImageSource.FromResource("al-utils-app.Images.mio.png"), };
+            Image image = new Image { Source = ImageSource.FromResource("al_utils_app.Images.mio.png"), };
             Label text = new Label
             {
                 Text="So Empty...", 
@@ -171,10 +172,10 @@ namespace al_utils_app
         }
 
 
-        private void CreateCardGrid(List<Media> list, Grid g)
+        private void CreateCardGrid(List<MediaListEntry> list, Grid g)
         {
             var total = 0;
-            foreach (Media media in list)
+            foreach (MediaListEntry media in list)
             {
                 MakeCard(total, media, g);
                 if (total % numCols == 0)
@@ -199,10 +200,10 @@ namespace al_utils_app
             if (g == notYetReleasedGrid)
                 page = "NOT_YET_RELEASED";
 
-            List<Media> mediaList = await GetData(page);
+            List<MediaListEntry> mediaList = await GetData(page);
             for (int i = 0; i < g.Children.Count; i++)
             {
-                Media media = mediaList[i];
+                MediaListEntry media = mediaList[i];
                 var timeUntilAiring = (int)media.Details.Airing.TimeUntilAiring;
                 var nextAiringEpisode = media.Details.Airing.Episode;
                 var progress = media.Progress;
@@ -277,7 +278,7 @@ namespace al_utils_app
             return "" + d + "d" + h + "h";
         }
 
-        private void MakeCard(int id, Media media, Grid g)
+        private void MakeCard(int id, MediaListEntry media, Grid g)
         {
             if (media.Details.Airing == null)
                 return;
@@ -429,7 +430,7 @@ namespace al_utils_app
             InitializeComponent();
             BindingContext = this;
 
-            menuIcon.Source = ImageSource.FromResource("al-utils-app.Images.menu.png");
+            menuIcon.Source = ImageSource.FromResource("al_utils_app.Images.menu.png");
 
             ICommand refreshCommand = new Command(() =>
             {
@@ -548,6 +549,9 @@ namespace al_utils_app
                     break;
                 case "Search Media":
                     await Navigation.PushAsync(new SearchPage());
+                    break;
+                case "Settings":
+                    await Navigation.PushAsync(new SettingsPage());
                     break;
             }
         }

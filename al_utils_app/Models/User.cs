@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace al_utils_app
+namespace al_utils_app.Models
 {
     internal class User
     {

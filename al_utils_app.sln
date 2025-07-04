@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "al-utils-app.Android", "al-utils-app.Android\al-utils-app.Android.csproj", "{50425B17-4A15-4577-A633-5585A660C339}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "al_utils_app.Android", "al_utils_app.Android\al_utils_app.Android.csproj", "{50425B17-4A15-4577-A633-5585A660C339}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "al-utils-app", "al-utils-app\al-utils-app.csproj", "{B5BF4459-9976-45C3-874B-DAA8B0DB76B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "al_utils_app", "al_utils_app\al_utils_app.csproj", "{B5BF4459-9976-45C3-874B-DAA8B0DB76B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
