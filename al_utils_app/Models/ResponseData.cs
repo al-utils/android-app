@@ -14,7 +14,7 @@ namespace al_utils_app.Models
         public Dictionary<string, object> Pages { get; set; }
         //public ResponsePage Page { get; set; }
         [JsonPropertyName("Page")] // single page
-        public Models.Page Page { get; set; }
+        public ResponsePage Page { get; set; }
 
         [JsonPropertyName("User")]
         public User User { get; set; }

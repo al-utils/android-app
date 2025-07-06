@@ -41,7 +41,7 @@
 
 
             <!-- results -->
-            <ListView x:Name="resultList" ItemsSource="{Binding Results}" RowHeight="170">
+            <ListView x:Name="resultList" ItemsSource="{Binding Results}" RowHeight="170" SelectionMode="None">
                 <ListView.Header>
                     <Frame HeightRequest="25" BackgroundColor="Transparent" Margin="0" Padding="0"/>
                 </ListView.Header>

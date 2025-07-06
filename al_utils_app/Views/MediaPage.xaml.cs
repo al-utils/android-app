@@ -11,6 +11,7 @@ using Xamarin.Forms.Xaml;
 
 namespace al_utils_app.Views
 {
+    //TODO: additional details
     public partial class MediaPage : ContentPage
     {
         string query = $@"query ($id: Int) {{

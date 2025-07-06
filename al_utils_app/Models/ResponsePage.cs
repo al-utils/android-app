@@ -10,6 +10,9 @@ namespace al_utils_app.Models
         [JsonPropertyName("mediaList")]
         public List<MediaListEntry> MediaList { get; set; }
 
+        [JsonPropertyName("media")]
+        public List<MediaDetails> Results { get; set; }
+
         public override string ToString()
         {
             return "page";

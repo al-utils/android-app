@@ -27,8 +27,6 @@ namespace al_utils_app.Views
 
         // todo:
         // username
-        // options?
-        // ignore
         // completed but current
         // full schedule
         
@@ -103,7 +101,7 @@ namespace al_utils_app.Views
             return mediaList;
         }
 
-        private async Task CreateCards()
+        public async Task CreateCards()
         {
             List<MediaListEntry> mediaList = await GetData();
             // clear grid
@@ -116,9 +114,11 @@ namespace al_utils_app.Views
             // filter by status
             List<MediaListEntry> releasingList = mediaList.Where(x => x.Details.Status == "RELEASING")
                                                  .Where(x => x.Details.Airing != null)
+                                                 .Where(x => !Hidden.IsHidden(x.Details.Id))
                                                  .ToList();
             List<MediaListEntry> notYetReleasedList = mediaList.Where(x => x.Details.Status == "NOT_YET_RELEASED")
                                                       .Where(x => x.Details.Airing != null)
+                                                      .Where(x => !Hidden.IsHidden(x.Details.Id))
                                                       .ToList();
 
             ReleasingCount = releasingList.Count;
@@ -231,6 +231,45 @@ namespace al_utils_app.Views
             }
         }
 
+        private void RemoveCard(View removeCard, Grid g)
+        {
+            var cards = g.Children;
+            int prevRow, prevCol;
+            var nextRow = Grid.GetRow(removeCard);
+            var nextCol = Grid.GetColumn(removeCard);
+
+            var index = cards.IndexOf(removeCard);
+            for (var i = index + 1; i < cards.Count; i++)
+            {
+                var card = cards[i];
+                prevRow = Grid.GetRow(card);
+                prevCol = Grid.GetColumn(card);
+                Grid.SetRow(card, nextRow);
+                Grid.SetColumn(card, nextCol);
+                nextRow = prevRow;
+                nextCol = prevCol;
+
+                if (g.Children.Count > 0)
+                {
+                    g.RowDefinitions.Clear();
+                    for (var j = 1; j <= g.Children.Count / 2; j++)
+                        g.RowDefinitions.Add(new RowDefinition() { Height = 320 });
+                }
+            }
+            cards.RemoveAt(index);
+            var count = cards.Count;
+            if (cards.Count == 0)
+            {
+                CreateEmptyGrid(g);
+                count = 0;
+            }
+
+            if (g == releasedGrid)
+                ReleasingCount = count;
+            else if (g == notYetReleasedGrid)
+                NotYetReleasedCount = count;
+        }
+
         private int releasingCount;
         public int ReleasingCount
         {
@@ -330,6 +369,10 @@ namespace al_utils_app.Views
                         await Clipboard.SetTextAsync(title);
                         break;
                     case "Hide":
+                        Hidden.Hide(mediaID);
+                        RemoveCard(gestureView, g);
+                        Hidden.SaveHiddenList();
+
                         break;
                 }
             };
@@ -429,6 +472,8 @@ namespace al_utils_app.Views
         {
             InitializeComponent();
             BindingContext = this;
+            Hidden.LoadHiddenList();
+            //Hidden.Reset();
 
             menuIcon.Source = ImageSource.FromResource("al_utils_app.Images.menu.png");
 
@@ -551,7 +596,7 @@ namespace al_utils_app.Views
                     await Navigation.PushAsync(new SearchPage());
                     break;
                 case "Settings":
-                    await Navigation.PushAsync(new SettingsPage());
+                    await Navigation.PushAsync(new SettingsPage(this));
                     break;
             }
         }

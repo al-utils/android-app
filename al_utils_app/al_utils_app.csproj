@@ -19,6 +19,7 @@
     <None Remove="Images\mio.png" />
     <None Remove="Images\search.png" />
     <None Remove="Images\user.png" />
+    <None Remove="Images\x.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +30,7 @@
     <EmbeddedResource Include="Images\mio.png" />
     <EmbeddedResource Include="Images\search.png" />
     <EmbeddedResource Include="Images\user.png" />
+    <EmbeddedResource Include="Images\x.png" />
   </ItemGroup>
 
   <ItemGroup>

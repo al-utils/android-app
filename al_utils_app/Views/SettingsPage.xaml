@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:src="clr-namespace:al_utils_app.ViewModels"
              x:Class="al_utils_app.Views.SettingsPage"
              NavigationPage.HasNavigationBar="False">
 
@@ -9,7 +10,8 @@
             <Style TargetType="Label" Class="header">
                 <Setter Property="TextColor" Value="#262524"/>
                 <Setter Property="FontFamily" Value="Jost"/>
-                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="FontSize" Value="25"/>
+                <Setter Property="Margin" Value="40,0,0,0"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -37,12 +39,44 @@
             </StackLayout>
 
             <!-- settings -->
-            <StackLayout>
-                <Label Text="Hidden" StyleClass="header"/>
-                <ListView x:Name="hiddenList" ItemsSource="{Binding Hidden}">
+            <StackLayout Margin="0,25,0,0">
+                <StackLayout>
+                    <Label Text="Hidden" StyleClass="header"/>
+                    <BoxView BackgroundColor="Black" 
+                            HeightRequest="1"/>
+                </StackLayout>
+                <ListView x:Name="hiddenList" ItemsSource="{Binding HiddenList}" 
+                          SeparatorColor="Black"
+                          RowHeight="60"
+                          VerticalOptions="Start"
+                          SelectionMode="None">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Padding="40,0,20,0" Orientation="Horizontal">
+                                        <Label Text="{Binding Title.GetTitle}" 
+                                               FontFamily="Jost" 
+                                               TextColor="Black" 
+                                               FontSize="20" 
+                                               VerticalTextAlignment="Center" 
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="StartAndExpand"
+                                               LineBreakMode="TailTruncation"/>
+                                    <ImageButton Source="{src:ImageResource al_utils_app.Images.x.png}"
+                                                 BindingContext="{Binding Id}"
+                                                 BackgroundColor="Transparent"
+                                                 Padding="20"
+                                                 Clicked="ImageButton_Clicked"/>
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" CommandParameter="{Binding Id}"/>
+                                    </StackLayout.GestureRecognizers>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
 
-                <Label Text="" StyleClass="header"/>
+                <Label Text="Other Setting" StyleClass="header"/>
             </StackLayout>
 
         </StackLayout>
