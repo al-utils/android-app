@@ -109,5 +109,18 @@ namespace al_utils_app.Views
             // reload mainpage
             home.CreateCards();
         }
+
+        private async void logoutButton_Clicked(object sender, EventArgs e)
+        {
+            var logout = await DisplayAlert("Confirm", "Are you sure you want to logout?", "Logout", "Cancel");
+            if (logout)
+            {
+                Authentication.SaveAccessToken("");
+
+                var rootPage = Navigation.NavigationStack.ToList()[0];
+                Navigation.InsertPageBefore(new AuthenticatePage(), rootPage);
+                await Navigation.PopToRootAsync();
+            }
+        }
     }
 }

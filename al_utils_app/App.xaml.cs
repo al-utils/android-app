@@ -12,7 +12,10 @@ namespace al_utils_app
         {
             InitializeComponent();
 
-            MainPage = new AndroidNavigationPage(new MainPage());
+            if (Authentication.IsAuthenticated())
+                MainPage = new AndroidNavigationPage(new MainPage());
+            else
+                MainPage = new AndroidNavigationPage(new AuthenticatePage());
         }
 
         protected override void OnStart()

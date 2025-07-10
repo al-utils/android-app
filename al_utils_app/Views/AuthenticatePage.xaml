@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="al_utils_app.Views.AuthenticatePage"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button" Class="button">
+                <Setter Property="BackgroundColor" Value="#c6c3bb"/>
+                <Setter Property="TextColor" Value="Black"/>
+                <Setter Property="HeightRequest" Value="60"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="#262524" VerticalOptions="FillAndExpand">
+            <StackLayout VerticalOptions="CenterAndExpand"
+                         Spacing="10">
+                <StackLayout VerticalOptions="CenterAndExpand" 
+                             BackgroundColor="#141414"
+                             WidthRequest="400" 
+                             HorizontalOptions="Center"
+                             Spacing="15"
+                             Padding="15, 20">
+                    <Button x:Name="webViewButton" 
+                            Text="Login To AniList" 
+                            StyleClass="button"
+                            Clicked="webViewButton_Clicked"/>
+                </StackLayout>
+                <StackLayout x:Name="receivedToken" 
+                             IsVisible="false"
+                             VerticalOptions="CenterAndExpand" 
+                             BackgroundColor="#141414"
+                             WidthRequest="400" 
+                             HorizontalOptions="Center"
+                             Spacing="15"
+                             Padding="15, 20">
+                    <Editor x:Name="textbox" HeightRequest="200" Placeholder="Paste Access Token" TextColor="LightGray"/>
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">
+                        <Button x:Name="pasteButton"
+                                Text="Paste" 
+                                HorizontalOptions="FillAndExpand"
+                                StyleClass="button"
+                                Clicked="pasteButton_Clicked"/>
+                        <Button x:Name="clearButton"
+                                Text="Clear" 
+                                HorizontalOptions="FillAndExpand"
+                                StyleClass="button"
+                                Clicked="clearButton_Clicked"/>
+                        <Button x:Name="submitButton"
+                                Text="Submit" 
+                                HorizontalOptions="FillAndExpand"
+                                StyleClass="button"
+                                Clicked="submitButton_Clicked"/>
+                    </StackLayout>
+                </StackLayout>
+                
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

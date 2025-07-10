@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="al_utils_app.Views.WebViewPage"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <StackLayout Margin="0" Padding="0" Spacing="0">
+
+            <!--header-->
+            <StackLayout Spacing="0" Padding="0" VerticalOptions="End" BackgroundColor="#262524">
+                <StackLayout Orientation="Vertical" BackgroundColor="#262524" Padding="25,15,25,10" Margin="0">
+                    <StackLayout Orientation="Horizontal" Padding="0" Margin="0">
+                        <ImageButton x:Name="backIcon" 
+                                     WidthRequest="30"
+                                     Aspect="AspectFit" 
+                                     BackgroundColor="Transparent" 
+                                     CornerRadius="10" 
+                                     Clicked="backIcon_Clicked"/>
+                        <Label Text="Login to AniList"
+                               Margin="15,0,0,0"
+                               TextColor="White" 
+                               FontFamily="Jost" 
+                               FontSize="28"/>
+                    </StackLayout>
+                </StackLayout>
+            </StackLayout>
+
+            <ScrollView VerticalOptions="FillAndExpand">
+                <WebView Source="{Binding URL}" VerticalOptions="FillAndExpand"/>
+            </ScrollView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
