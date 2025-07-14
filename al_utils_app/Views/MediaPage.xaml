@@ -1,194 +1,227 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="al_utils_app.Views.MediaPage"
-             NavigationPage.HasNavigationBar="False">
-    <ContentPage.Resources>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            x:Class="al_utils_app.Views.MediaPage"
+            xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+            android:TabbedPage.ToolbarPlacement="Top"
+            BarBackgroundColor="{Binding CoverImageColor}"
+            NavigationPage.HasNavigationBar="False">
+
+    <TabbedPage.Resources>
         <Style Class="info" TargetType="Label">
             <Setter Property="FontFamily" Value="Jost"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="TextColor" Value="White"/>
         </Style>
-    </ContentPage.Resources>
-    <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
+        <Style Class="tagFrame" TargetType="Frame">
+            <Setter Property="BackgroundColor" Value="#262524"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="Margin" Value="0,0,15,15"/>
+        </Style>
+    </TabbedPage.Resources>
+    <ContentPage Title="Overview">
 
-        <!--
-        <Frame BackgroundColor="#141414" CornerRadius="0"
-               HeightRequest="25" Padding="0"/>
-        -->
+        <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
+      
+            <ScrollView Padding="0,0,0,100">
+    
+                <StackLayout>
+    
+                    <AbsoluteLayout>
+                        <Image x:Name="banner" 
+                            Source="{Binding BannerImageURL}"
+                            Aspect="AspectFill"
+                            BackgroundColor="#262524" 
+                            AbsoluteLayout.LayoutBounds="0,0,1,225"
+                            AbsoluteLayout.LayoutFlags="WidthProportional"/>
+                        <Frame BackgroundColor="#000" 
+                            Opacity="0.45"
+                            AbsoluteLayout.LayoutBounds="0,0,1,225"
+                            AbsoluteLayout.LayoutFlags="WidthProportional"/>
+                        <ImageButton x:Name="backIcon" 
+                                    Aspect="AspectFit" 
+                                    BackgroundColor="Transparent" 
+                                    CornerRadius="10" 
+                                    Clicked="backIcon_Clicked"
+                                    AbsoluteLayout.LayoutBounds="25,25,30,30"/>
+                        <StackLayout AbsoluteLayout.LayoutBounds="0,70,1,180"
+                                    AbsoluteLayout.LayoutFlags="WidthProportional,XProportional"
+                                    Margin="15,0"
+                                    Orientation="Horizontal">
+                            <Frame CornerRadius="10"
+                                Padding="0">
+                                <ImageButton x:Name="cover" 
+                                            Source="{Binding CoverImageURL}"
+                                            Aspect="AspectFill"
+                                            BackgroundColor="#181716"
+                                            WidthRequest="125"
+                                            Clicked="cover_Clicked"/>
+                            </Frame>
+                            <Label x:Name="titleLabel"
+                                Text="{Binding Title}"
+                                TextColor="White"
+                                VerticalOptions="End"
+                                FontSize="25"
+                                FontFamily="Jost"
+                                Margin="5,0,0,35"
+                                LineHeight="0.75">
+                                <Label.GestureRecognizers>
+                                    <!-- copy title to clipboard -->
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                                </Label.GestureRecognizers>
+                            </Label>
+    
+                        </StackLayout>
+    
+    
+                    </AbsoluteLayout>
+    
+                        <Label x:Name="descriptionLabel" 
+                            Margin="15,10,15,0"
+                            Padding="10,5"
+                            FormattedText="{Binding Description}"
+                            Background="#262524"
+                            TextColor="White"
+                            FontSize="15"
+                            FontFamily="Jost"/>
+    
+                    <StackLayout x:Name="stats"
+                                BackgroundColor="#262524"
+                                HeightRequest="65"
+                                Margin="15,10,15,0"
+                                Padding="35,15,35,0"
+                                Orientation="Horizontal">
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <Label Text="favorites"
+                                HorizontalOptions="CenterAndExpand"
+                                FontFamily="Jost"/>
+                            <Label x:Name="favoritesLabel" Text="{Binding Favorites}" 
+                                HorizontalTextAlignment="Center"
+                                TextColor="White"
+                                FontSize="18"
+                                FontFamily="Jost"/>
+                        </StackLayout>
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <Label Text="popularity"
+                                HorizontalOptions="CenterAndExpand"
+                                FontFamily="Jost"/>
+                            <Label x:Name="popularityLabel" Text="{Binding Popularity}" 
+                                HorizontalTextAlignment="Center"
+                                TextColor="White"
+                                FontSize="18"
+                                FontFamily="Jost"/>
+                        </StackLayout>
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <Label Text="avg score"
+                                HorizontalOptions="CenterAndExpand"
+                                FontFamily="Jost"/>
+                            <Label x:Name="averageScoreLabel" Text="{Binding AverageScore}" 
+                                HorizontalTextAlignment="Center"
+                                TextColor="White"
+                                FontSize="18"
+                                FontFamily="Jost"/>
+                        </StackLayout>
+                    </StackLayout>
+    
+                    <StackLayout x:Name="info"
+                                BackgroundColor="#262524"
+                                Margin="15,10,15,0"
+                                Padding="10,5">
+    
+                        <Label Text="{Binding Origin, StringFormat='Origin: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding Id, StringFormat='ID: {0}'}" 
+                            StyleClass="info"/>
+    
+                        <BoxView StyleClass="hr"/>
+    
+                        <Label Text="{Binding StartDate, StringFormat='Start Date: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding EndDate, StringFormat='End Date: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding Season, StringFormat='Season: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding Format, StringFormat='Format: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding Status, StringFormat='Status: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding Episodes, StringFormat='Episodes: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding Duration, StringFormat='Duration: {0} mins'}" 
+                            StyleClass="info"/>
+    
+                        <BoxView StyleClass="hr"/>
+    
+                        <Label Text="{Binding TitleRomaji, StringFormat='Title Romaji: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding TitleEnglish, StringFormat='Title English: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding TitleNative, StringFormat='Title Native: {0}'}" 
+                            StyleClass="info"/>
+    
+                    </StackLayout>
 
-        <!--
-        <Frame BackgroundColor="#262524" CornerRadius="0">
-            <StackLayout Orientation="Horizontal">
-                <ImageButton x:Name="backIcon"
-                             HorizontalOptions="Start"
-                             VerticalOptions="Center"
-                             Aspect="AspectFit"
-                             BackgroundColor="Transparent"
-                             Padding="4"
-                             Margin="0, 5, 5, 0"
-                             CornerRadius="10"
-                             WidthRequest="35"
-                             HeightRequest="35"
-                             Clicked="backIcon_Clicked"/>
-                <Label Text="Media"
-                       TextColor="White"
-                       HeightRequest="40"
-                       Margin="5, 0"
-                       FontFamily="Jost"
-                       FontSize="28"
-                       HorizontalOptions="End"/>
-            </StackLayout>
-        </Frame>
-        -->
+
+                    <!-- genres -->
+                    <StackLayout Margin="15,10,15,0"
+                                 Padding="0">
+                        <FlexLayout x:Name="genresFlex" 
+                                    Direction="Row" 
+                                    AlignItems="Start" 
+                                    JustifyContent="Start"
+                                    Wrap="Wrap">
+                        </FlexLayout>
+                    </StackLayout>
+    
+                </StackLayout>
+    
+            </ScrollView>
+    
+            <!--
+            <RefreshView x:Name="refreshView"
+                IsRefreshing="{Binding IsRefreshing}"
+                        Command="{Binding RefreshCommand}">
+            </RefreshView>
+            -->
             
-        <ScrollView Padding="0,0,0,100">
+            
+    
+        </StackLayout>
+        
+    </ContentPage>
 
-            <StackLayout>
+    <ContentPage Title="Related">
 
-                <AbsoluteLayout>
-                    <Image x:Name="banner" 
-                           Source="{Binding BannerImageURL}"
-                           Aspect="AspectFill"
-                           BackgroundColor="#262524" 
-                           AbsoluteLayout.LayoutBounds="0,0,1,225"
-                           AbsoluteLayout.LayoutFlags="WidthProportional"/>
-                    <Frame BackgroundColor="#000" 
-                           Opacity="0.45"
-                           AbsoluteLayout.LayoutBounds="0,0,1,225"
-                           AbsoluteLayout.LayoutFlags="WidthProportional"/>
-                    <ImageButton x:Name="backIcon" 
-                                 Aspect="AspectFit" 
-                                 BackgroundColor="Transparent" 
-                                 CornerRadius="10" 
-                                 Clicked="backIcon_Clicked"
-                                 AbsoluteLayout.LayoutBounds="25,25,30,30"/>
-                    <StackLayout AbsoluteLayout.LayoutBounds="0,70,1,180"
-                                 AbsoluteLayout.LayoutFlags="WidthProportional,XProportional"
-                                 Margin="15,0"
-                                 Orientation="Horizontal">
-                        <Frame CornerRadius="10"
-                               Padding="0">
-                            <ImageButton x:Name="cover" 
-                                         Source="{Binding CoverImageURL}"
-                                         Aspect="AspectFill"
-                                         BackgroundColor="#181716"
-                                         WidthRequest="125"
-                                         Clicked="cover_Clicked"/>
+        <ContentPage.Resources>
+            <Style TargetType="Label" Class="heading">
+                <Setter Property="FontFamily" Value="Jost"/>
+                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="TextColor" Value="White"/>
+            </Style>
+        </ContentPage.Resources>
+
+        <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
+            <ScrollView Padding="0,0,0,100">
+
+                <StackLayout>
+                    <Frame BackgroundColor="{Binding CoverImageColor}" Padding="0">
+                        <Frame Background="#73000000">
+                            <Label Text="Media" StyleClass="heading"/>
                         </Frame>
-                        <Label x:Name="titleLabel"
-                               Text="{Binding Title}"
-                               TextColor="White"
-                               VerticalOptions="End"
-                               FontSize="25"
-                               FontFamily="Jost"
-                               Margin="5,0,0,35"
-                               LineHeight="0.75">
-                            <Label.GestureRecognizers>
-                                <!-- copy title to clipboard -->
-                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
-                            </Label.GestureRecognizers>
-                        </Label>
+                    </Frame>
+                    <CarouselView x:Name="relatedMediaList">
+                    </CarouselView>
 
-                    </StackLayout>
-
-
-                </AbsoluteLayout>
-
-                    <Label x:Name="descriptionLabel" 
-                           Margin="15,10,15,0"
-                           Padding="10,5"
-                           FormattedText="{Binding Description}"
-                           Background="#262524"
-                           TextColor="White"
-                           FontSize="15"
-                           FontFamily="Jost"/>
-
-                <StackLayout x:Name="stats"
-                             BackgroundColor="#262524"
-                             HeightRequest="65"
-                             Margin="15,10,15,0"
-                             Padding="35,15,35,0"
-                             Orientation="Horizontal">
-                    <StackLayout HorizontalOptions="FillAndExpand">
-                        <Label Text="favorites"
-                               HorizontalOptions="CenterAndExpand"
-                               FontFamily="Jost"/>
-                        <Label x:Name="favoritesLabel" Text="{Binding Favorites}" 
-                               HorizontalTextAlignment="Center"
-                               TextColor="White"
-                               FontSize="18"
-                               FontFamily="Jost"/>
-                    </StackLayout>
-                    <StackLayout HorizontalOptions="FillAndExpand">
-                        <Label Text="popularity"
-                               HorizontalOptions="CenterAndExpand"
-                               FontFamily="Jost"/>
-                        <Label x:Name="popularityLabel" Text="{Binding Popularity}" 
-                               HorizontalTextAlignment="Center"
-                               TextColor="White"
-                               FontSize="18"
-                               FontFamily="Jost"/>
-                    </StackLayout>
-                    <StackLayout HorizontalOptions="FillAndExpand">
-                        <Label Text="avg score"
-                               HorizontalOptions="CenterAndExpand"
-                               FontFamily="Jost"/>
-                        <Label x:Name="averageScoreLabel" Text="{Binding AverageScore}" 
-                               HorizontalTextAlignment="Center"
-                               TextColor="White"
-                               FontSize="18"
-                               FontFamily="Jost"/>
-                    </StackLayout>
+                    <Frame BackgroundColor="{Binding CoverImageColor}" Padding="0">
+                        <Frame Background="#73000000">
+                            <Label Text="Characters" StyleClass="heading"/>
+                        </Frame>
+                    </Frame>
+                    <CarouselView x:Name="relatedCharacterList">
+                    </CarouselView>
                 </StackLayout>
-
-                <StackLayout x:Name="info"
-                             BackgroundColor="#262524"
-                             Margin="15,10,15,0"
-                             Padding="10,5">
-
-                    <Label Text="{Binding Origin, StringFormat='Origin: {0}'}" 
-                           StyleClass="info"/>
-                    <Label Text="{Binding Id, StringFormat='ID: {0}'}" 
-                           StyleClass="info"/>
-
-                    <BoxView StyleClass="hr"/>
-
-                    <Label Text="{Binding StartDate, StringFormat='Start Date: {0}'}" 
-                           StyleClass="info"/>
-                    <Label Text="{Binding EndDate, StringFormat='End Date: {0}'}" 
-                           StyleClass="info"/>
-                    <Label Text="{Binding Season, StringFormat='Season: {0}'}" 
-                           StyleClass="info"/>
-                    <Label Text="{Binding Status, StringFormat='Status: {0}'}" 
-                           StyleClass="info"/>
-                    <Label Text="{Binding Episodes, StringFormat='Episodes: {0}'}" 
-                           StyleClass="info"/>
-
-                    <BoxView StyleClass="hr"/>
-
-                    <Label Text="{Binding TitleRomaji, StringFormat='Title Romaji: {0}'}" 
-                           StyleClass="info"/>
-                    <Label Text="{Binding TitleEnglish, StringFormat='Title English: {0}'}" 
-                           StyleClass="info"/>
-                    <Label Text="{Binding TitleNative, StringFormat='Title Native: {0}'}" 
-                           StyleClass="info"/>
-
-                </StackLayout>
-
-
-            </StackLayout>
-
-        </ScrollView>
-
-        <!--
-        <RefreshView x:Name="refreshView"
-            IsRefreshing="{Binding IsRefreshing}"
-                     Command="{Binding RefreshCommand}">
-        </RefreshView>
-        -->
+            </ScrollView>
+        </StackLayout>
         
-        
-
-    </StackLayout>
-</ContentPage>
+    </ContentPage>
+</TabbedPage>

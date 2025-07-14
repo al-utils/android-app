@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
@@ -33,6 +34,9 @@ namespace al_utils_app.Models
         }
         [JsonPropertyName("episodes")]
         public int? Episodes { get; set; }
+
+        [JsonPropertyName("duration")]
+        public int? Duration { get; set; }
 
         private MediaImage image;
         [JsonPropertyName("coverImage")]
@@ -178,6 +182,9 @@ namespace al_utils_app.Models
         }
         [JsonPropertyName("bannerImage")]
         public string BannerImage { get; set; }
+
+        [JsonPropertyName("genres")]
+        public List<string> Genres { get; set; }
         [JsonPropertyName("favourites")]
         public int Favorites { get; set; }
         [JsonPropertyName("averageScore")]

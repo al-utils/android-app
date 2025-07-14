@@ -1,6 +1,7 @@
 ﻿using al_utils_app.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ using Xamarin.Forms.Xaml;
 namespace al_utils_app.Views
 {
     //TODO: additional details
-    public partial class MediaPage : ContentPage
+    public partial class MediaPage : TabbedPage
     {
         string query = $@"query ($id: Int) {{
   Media(id: $id) {{ 
@@ -33,11 +34,13 @@ namespace al_utils_app.Views
     status(version: 2)
     format
     episodes
+    duration
     coverImage {{
       extraLarge
       color
     }}
     bannerImage
+    genres
     favourites
     averageScore
     popularity
@@ -93,6 +96,7 @@ namespace al_utils_app.Views
         private async Task FillData()
         {
             MediaDetails details = await GetData();
+                        
 
             Description = details.DescriptionFullFormat;
             if (details.BannerImage != null)
@@ -100,6 +104,7 @@ namespace al_utils_app.Views
             else
                 banner.BackgroundColor = Color.FromHex(details.Image.Color);
             CoverImageURL = details.Image.ExtraLarge;
+            CoverImageColor = Color.FromHex(details.Image.Color);
             if (details.Title.English != null)
                 Title = details.Title.English;
             else if (details.Title.Romaji != null)
@@ -117,14 +122,32 @@ namespace al_utils_app.Views
             StartDate = details.StartDate.ToString();
             EndDate = details.EndDate.ToString();
             Season = UpperToCapitalize(details.Season) + " " + details.SeasonYear;
+            Format = details.GetFormat();
             Status = details.GetStatus();
-            //Format = details.GetFormat();
             Episodes = "" + details.Episodes;
+            Duration = "" + details.Duration;
 
             TitleRomaji = details.Title.Romaji;
             TitleEnglish = details.Title.English;
             TitleNative = details.Title.Native;
 
+
+            // create genres
+            foreach (var genre in details.Genres)
+            {
+                Console.WriteLine("HERE: " + genre);
+                Frame f = new Frame()
+                {
+                    StyleClass = new List<string>() { "tagFrame" }
+                };
+                Label l = new Label()
+                {
+                    Text = genre,
+                    StyleClass = new List<string>() { "info" }
+                };
+                f.Content = l;
+                genresFlex.Children.Add(f);
+            }
         }
 
         private FormattedString description;
@@ -157,6 +180,17 @@ namespace al_utils_app.Views
             {
                 coverImageURL = value;
                 OnPropertyChanged(nameof(CoverImageURL));
+            }
+        }
+
+        private Color coverImageColor;
+        public Color CoverImageColor
+        {
+            get { return coverImageColor; }
+            set
+            {
+                coverImageColor = value;
+                OnPropertyChanged(nameof(CoverImageColor));
             }
         }
 
@@ -262,6 +296,17 @@ namespace al_utils_app.Views
             }
         }
 
+        private string format;
+        public string Format
+        {
+            get { return format; }
+            set
+            {
+                format = value;
+                OnPropertyChanged(nameof(Format));
+            }
+        }
+
         private string status;
         public string Status
         {
@@ -281,6 +326,17 @@ namespace al_utils_app.Views
             {
                 episodes = value;
                 OnPropertyChanged(nameof(Episodes));
+            }
+        }
+
+        private string duration;
+        public string Duration
+        {
+            get { return duration; }
+            set
+            {
+                duration = value;
+                OnPropertyChanged(nameof(Duration));
             }
         }
 
