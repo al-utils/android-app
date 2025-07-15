@@ -16,7 +16,12 @@
         <Style Class="tagFrame" TargetType="Frame">
             <Setter Property="BackgroundColor" Value="#262524"/>
             <Setter Property="Padding" Value="20,10"/>
-            <Setter Property="Margin" Value="0,0,15,15"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+        <Style TargetType="Label" Class="heading">
+            <Setter Property="FontFamily" Value="Jost"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="TextColor" Value="White"/>
         </Style>
     </TabbedPage.Resources>
     <ContentPage Title="Overview">
@@ -191,37 +196,91 @@
     </ContentPage>
 
     <ContentPage Title="Related">
-
-        <ContentPage.Resources>
-            <Style TargetType="Label" Class="heading">
-                <Setter Property="FontFamily" Value="Jost"/>
-                <Setter Property="FontSize" Value="24"/>
-                <Setter Property="TextColor" Value="White"/>
-            </Style>
-        </ContentPage.Resources>
-
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
-            <ScrollView Padding="0,0,0,100">
-
-                <StackLayout>
-                    <Frame BackgroundColor="{Binding CoverImageColor}" Padding="0">
-                        <Frame Background="#73000000">
-                            <Label Text="Media" StyleClass="heading"/>
-                        </Frame>
-                    </Frame>
-                    <CarouselView x:Name="relatedMediaList">
-                    </CarouselView>
-
-                    <Frame BackgroundColor="{Binding CoverImageColor}" Padding="0">
-                        <Frame Background="#73000000">
-                            <Label Text="Characters" StyleClass="heading"/>
-                        </Frame>
-                    </Frame>
-                    <CarouselView x:Name="relatedCharacterList">
-                    </CarouselView>
-                </StackLayout>
-            </ScrollView>
+            <Frame BackgroundColor="{Binding CoverImageColor}" Padding="0">
+                <Frame Background="#73000000">
+                    <Label Text="Related" StyleClass="heading"/>
+                </Frame>
+            </Frame>
+            <ListView x:Name="relatedMediaList" RowHeight="170" SelectionMode="None">
+                <ListView.Footer>
+                    <Frame HeightRequest="50" BackgroundColor="Transparent" Margin="0" Padding="0"/>
+                </ListView.Footer>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame WidthRequest="100" BackgroundColor="#3c3836" Margin="15,15,15,0" Padding="0" CornerRadius="10">
+                                <StackLayout Orientation="Horizontal">
+                                    <Image Source="{Binding Node.CoverImage.ExtraLarge}" WidthRequest="100" Aspect="AspectFill" BackgroundColor="#3000000"/>
+                                    <StackLayout Margin="10">
+                                        <Label Text="{Binding Node.Title.GetTitle}"
+                                               TextColor="White"
+                                               FontFamily="Jost"
+                                               FontSize="20"
+                                               MaxLines="2"
+                                               LineBreakMode="TailTruncation"/>
+                                        <Label Text="{Binding GetRelationType}"
+                                               TextColor="#c6c3bb"
+                                               FontFamily="Jost"
+                                               FontSize="16"/>
+                                        <Label Text="{Binding Node.GetFormat}"
+                                               TextColor="#c6c3bb"
+                                               FontFamily="Jost"
+                                               FontSize="16"/>
+                                    </StackLayout>
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="RelatedTapped"  CommandParameter="{Binding Node.Id}"/>
+                                    </StackLayout.GestureRecognizers>
+                                </StackLayout>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
-        
+    </ContentPage>
+
+    
+    
+    
+    <ContentPage Title="Characters">
+        <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
+            <Frame BackgroundColor="{Binding CoverImageColor}" Padding="0">
+                <Frame Background="#73000000">
+                    <Label Text="Characters" StyleClass="heading"/>
+                </Frame>
+            </Frame>
+            <ListView x:Name="relatedCharacterList" RowHeight="170" SelectionMode="None">
+                <ListView.Footer>
+                    <Frame HeightRequest="50" BackgroundColor="Transparent" Margin="0" Padding="0"/>
+                </ListView.Footer>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame WidthRequest="100" BackgroundColor="#3c3836" Margin="15,15,15,0" Padding="0" CornerRadius="10">
+                                <StackLayout Orientation="Horizontal">
+                                    <Image Source="{Binding Node.Image.Large}" WidthRequest="100" Aspect="AspectFill" BackgroundColor="#3000000"/>
+                                    <StackLayout Margin="10">
+                                        <Label Text="{Binding Node.Name.Full}"
+                                               TextColor="White"
+                                               FontFamily="Jost"
+                                               FontSize="20"
+                                               MaxLines="2"
+                                               LineBreakMode="TailTruncation"/>
+                                        <Label Text="{Binding GetRole}"
+                                               TextColor="#c6c3bb"
+                                               FontFamily="Jost"
+                                               FontSize="16"/>
+                                    </StackLayout>
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="CharacterTapped"  CommandParameter="{Binding Node.Id}"/>
+                                    </StackLayout.GestureRecognizers>
+                                </StackLayout>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
     </ContentPage>
 </TabbedPage>

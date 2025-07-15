@@ -50,6 +50,37 @@ namespace al_utils_app.Views
       english
       native
     }}
+    relations {{
+      edges {{
+        relationType (version: 2)
+        node {{
+          id
+          format
+          coverImage {{
+            extraLarge
+          }}
+          title {{
+            romaji
+            english
+			native
+          }}
+        }}
+      }}
+    }}
+    characters(sort: ROLE) {{
+      edges {{
+        role
+        node {{
+          id
+          name {{
+            full
+          }}
+          image {{
+            large
+          }}
+        }}
+      }}
+    }}
   }}
 }}";
 
@@ -93,6 +124,9 @@ namespace al_utils_app.Views
             return s[0] + s.Substring(1).ToLower();
         }
 
+        private ObservableCollection<MediaEdge> RelatedMediaList { get; set; } = new ObservableCollection<MediaEdge>();
+        private ObservableCollection<MediaEdge> RelatedCharacterList { get; set; } = new ObservableCollection<MediaEdge>();
+
         private async Task FillData()
         {
             MediaDetails details = await GetData();
@@ -101,10 +135,13 @@ namespace al_utils_app.Views
             Description = details.DescriptionFullFormat;
             if (details.BannerImage != null)
                 BannerImageURL = details.BannerImage;
+            else if (details.CoverImage.Color != null)
+                banner.BackgroundColor = Color.FromHex(details.CoverImage.Color);
+            CoverImageURL = details.CoverImage.ExtraLarge;
+            if (details.CoverImage.Color != null)
+                CoverImageColor = Color.FromHex(details.CoverImage.Color);
             else
-                banner.BackgroundColor = Color.FromHex(details.Image.Color);
-            CoverImageURL = details.Image.ExtraLarge;
-            CoverImageColor = Color.FromHex(details.Image.Color);
+                CoverImageColor = Color.FromHex("#262524");
             if (details.Title.English != null)
                 Title = details.Title.English;
             else if (details.Title.Romaji != null)
@@ -122,8 +159,8 @@ namespace al_utils_app.Views
             StartDate = details.StartDate.ToString();
             EndDate = details.EndDate.ToString();
             Season = UpperToCapitalize(details.Season) + " " + details.SeasonYear;
-            Format = details.GetFormat();
-            Status = details.GetStatus();
+            Format = details.GetFormat;
+            Status = details.GetStatus;
             Episodes = "" + details.Episodes;
             Duration = "" + details.Duration;
 
@@ -135,7 +172,6 @@ namespace al_utils_app.Views
             // create genres
             foreach (var genre in details.Genres)
             {
-                Console.WriteLine("HERE: " + genre);
                 Frame f = new Frame()
                 {
                     StyleClass = new List<string>() { "tagFrame" }
@@ -143,11 +179,22 @@ namespace al_utils_app.Views
                 Label l = new Label()
                 {
                     Text = genre,
-                    StyleClass = new List<string>() { "info" }
+                    StyleClass = new List<string>() { "info" },
                 };
                 f.Content = l;
                 genresFlex.Children.Add(f);
+                BoxView b = new BoxView()
+                {
+                    BackgroundColor = Color.Transparent,
+                    WidthRequest = 15
+                };
+                genresFlex.Children.Add(f);
+                genresFlex.Children.Add(b);
             }
+
+            // relations list
+            relatedMediaList.ItemsSource = details.Relations.Edge;
+            relatedCharacterList.ItemsSource = details.Characters.Edge;
         }
 
         private FormattedString description;
@@ -377,6 +424,17 @@ namespace al_utils_app.Views
         {
             var title = ((Label)sender).Text;
             Clipboard.SetTextAsync(title);
+        }
+
+        private async void CharacterTapped(object sender, EventArgs e)
+        {
+            return;
+        }
+
+        private async void RelatedTapped(object sender, EventArgs e)
+        {
+            var id = (int)((TappedEventArgs)e).Parameter;
+            await Navigation.PushAsync(new MediaPage(id));
         }
     }
 }

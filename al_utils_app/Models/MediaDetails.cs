@@ -38,14 +38,14 @@ namespace al_utils_app.Models
         [JsonPropertyName("duration")]
         public int? Duration { get; set; }
 
-        private MediaImage image;
+        private MediaImage coverImage;
         [JsonPropertyName("coverImage")]
-        public MediaImage Image
+        public MediaImage CoverImage
         {
-            get { return image; }
+            get { return coverImage; }
             set 
             { 
-                image = value;
+                coverImage = value;
                 OnPropertyChanged();
             }
         }
@@ -132,52 +132,58 @@ namespace al_utils_app.Models
         public int? SeasonYear { get; set; }
         [JsonPropertyName("status")]
         public string Status { get; set; }
-        public string GetStatus()
+        public string GetStatus
         {
-            switch (Status)
+            get
             {
-                case "FINISHED":
-                    return "Finished";
-                case "RELEASING":
-                    return "Releasing";
-                case "NOT_YET_RELEASED":
-                    return "Not Yet Released";
-                case "CANCELLED":
-                    return "Cancelled";
-                case "HIATUS":
-                    return "Hiatus";
-                default:
-                    return "Unknown";
+                switch (Status)
+                {
+                    case "FINISHED":
+                        return "Finished";
+                    case "RELEASING":
+                        return "Releasing";
+                    case "NOT_YET_RELEASED":
+                        return "Not Yet Released";
+                    case "CANCELLED":
+                        return "Cancelled";
+                    case "HIATUS":
+                        return "Hiatus";
+                    default:
+                        return "Unknown";
+                }
             }
         }
         [JsonPropertyName("format")]
         public string Format { get; set; }
-        public string GetFormat()
+        public string GetFormat
         {
-            switch (Format)
+            get
             {
-                case "TV":
-                    return "TV";
-                case "TV_SHORT":
-                    return "TV Short";
-                case "MOVIE":
-                    return "Movie";
-                case "SPECIAL":
-                    return "Special";
-                case "OVA":
-                    return "OVA";
-                case "ONA":
-                    return "ONA";
-                case "MUSIC":
-                    return "Music";
-                case "MANGA":
-                    return "Manga";
-                case "NOVEL":
-                    return "Novel";
-                case "ONE_SHOT":
-                    return "One Shot";
-                default:
-                    return "Unknown";
+                switch (Format)
+                {
+                    case "TV":
+                        return "TV";
+                    case "TV_SHORT":
+                        return "TV Short";
+                    case "MOVIE":
+                        return "Movie";
+                    case "SPECIAL":
+                        return "Special";
+                    case "OVA":
+                        return "OVA";
+                    case "ONA":
+                        return "ONA";
+                    case "MUSIC":
+                        return "Music";
+                    case "MANGA":
+                        return "Manga";
+                    case "NOVEL":
+                        return "Novel";
+                    case "ONE_SHOT":
+                        return "One Shot";
+                    default:
+                        return "Unknown";
+                }
             }
         }
         [JsonPropertyName("bannerImage")]
@@ -194,6 +200,22 @@ namespace al_utils_app.Models
         [JsonPropertyName("countryOfOrigin")]
         public string CountryOfOrigin { get; set; }
 
+
+
+
+        [JsonPropertyName("relations")]
+        public MediaRelation Relations { get; set; }
+        [JsonPropertyName("characters")]
+        public MediaRelation Characters { get; set; }
+
+
+
+
+        // characters
+        [JsonPropertyName("name")]
+        public CharacterName Name { get; set; }
+        [JsonPropertyName("image")]
+        public CharacterImage Image { get; set; }
 
 
 

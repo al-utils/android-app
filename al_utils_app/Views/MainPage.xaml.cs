@@ -340,7 +340,7 @@ namespace al_utils_app.Views
                 episodes = "?";
             else
                 episodes = "" + media.Details.Episodes;
-            var imageURL = media.Details.Image.ExtraLarge;
+            var imageURL = media.Details.CoverImage.ExtraLarge;
 
 
 
