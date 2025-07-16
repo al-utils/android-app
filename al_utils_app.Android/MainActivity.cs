@@ -21,6 +21,20 @@ namespace al_utils_app.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
+
+            // app var width height
+            var pixels = Resources.DisplayMetrics.WidthPixels;
+            var scale = Resources.DisplayMetrics.Density;
+
+            double dps = (double)((pixels - 0.5f) / scale);
+
+            App.ScreenWidth = (int)dps;
+
+            pixels = Resources.DisplayMetrics.HeightPixels;
+            dps = (double)((pixels - 0.5f) / scale);
+
+            App.ScreenHeight = (int)dps;
+
             //Window.SetFlags(WindowManagerFlags.LayoutNoLimits, WindowManagerFlags.LayoutNoLimits);
             //Window.ClearFlags(WindowManagerFlags.TranslucentStatus);
             //Window.SetStatusBarColor(Android.Graphics.Color.Transparent);

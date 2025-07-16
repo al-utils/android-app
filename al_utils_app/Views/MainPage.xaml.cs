@@ -468,7 +468,7 @@ namespace al_utils_app.Views
             g.Children.Add(gestureView, col, row);
         }
 
-        public MainPage()
+        public MainPage(string user="")
         {
             InitializeComponent();
             BindingContext = this;
@@ -490,16 +490,14 @@ namespace al_utils_app.Views
             refreshView.Command = refreshCommand;
             refreshView2.Command = refreshCommand2;
 
-            if (currentUser == "")
-            {
-                // search for user
-                DisplaySearchUserPrompt(true);
+            if (user != "")
+                //{
+                //    // search for user
+                //    DisplaySearchUserPrompt(true);
 
-            }
-            else
-            {
-                CreateCards();
-            }
+                //}
+                currentUser = user;
+            CreateCards();
         }
 
         protected override async void OnAppearing()
@@ -574,11 +572,12 @@ namespace al_utils_app.Views
 
             Response data = JsonSerializer.Deserialize<Response>(jsonString);
             User user = data.Data.User;
-            currentUser = user.Name;
-            Preferences.Set("currentUser", currentUser);
+            //currentUser = user.Name;
+            //Preferences.Set("currentUser", currentUser);
 
             // regenerate chart
-            await CreateCards();
+            //await CreateCards();
+            await Navigation.PushAsync(new MainPage(user.Name));
         }
 
         private async void menuIcon_Clicked(object sender, EventArgs e)

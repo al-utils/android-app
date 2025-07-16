@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="al_utils_app.Views.MainPage"
-             BarBackgroundColor="#262524"
-             SelectedTabColor="White"
-             UnselectedTabColor="#888888"
-             NavigationPage.HasNavigationBar="True">
+            x:Class="al_utils_app.Views.MainPage"
+            BarBackgroundColor="#262524"
+            SelectedTabColor="White"
+            UnselectedTabColor="#888888"
+            NavigationPage.HasNavigationBar="True"
+            NavigationPage.HasBackButton="False">
     <TabbedPage.Resources>
         <Style Class="seasonHeader" TargetType="Label">
             <Setter Property="Margin" Value="0"/>
@@ -78,6 +79,9 @@
         </StackLayout>
     </NavigationPage.TitleView>
 
+    <!--
+    <ContentPage Title="{Binding ReleasingCount, StringFormat='Releasing ({0})'}">
+    -->
     <ContentPage Title="{Binding ReleasingCount, StringFormat='Releasing ({0})'}">
 
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
@@ -101,7 +105,7 @@
         </StackLayout>
     </ContentPage>
 
-    <ContentPage Title="{Binding NotYetReleasedCount, StringFormat='Not Yet Released ({0})'}">
+    <ContentPage Title="{Binding NotYetReleasedCount, StringFormat='Upcoming ({0})'}">
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
             <RefreshView x:Name="refreshView2"
                      IsRefreshing="{Binding IsRefreshing}"
@@ -120,6 +124,12 @@
                     </Grid>
                 </ScrollView>
             </RefreshView>
+        </StackLayout>
+    </ContentPage>
+
+    <ContentPage Title="User Profile">
+        <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
+            
         </StackLayout>
     </ContentPage>
 
