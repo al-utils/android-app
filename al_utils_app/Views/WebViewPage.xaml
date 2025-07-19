@@ -16,18 +16,18 @@
                                      BackgroundColor="Transparent" 
                                      CornerRadius="10" 
                                      Clicked="backIcon_Clicked"/>
-                        <Label Text="Login to AniList"
+                        <Label Text="{Binding Title}"
                                Margin="15,0,0,0"
                                TextColor="White" 
                                FontFamily="Jost" 
+                               MaxLines="1"
+                               LineBreakMode="TailTruncation"
                                FontSize="28"/>
                     </StackLayout>
                 </StackLayout>
             </StackLayout>
 
-            <ScrollView VerticalOptions="FillAndExpand">
-                <WebView Source="{Binding URL}" VerticalOptions="FillAndExpand"/>
-            </ScrollView>
+            <WebView Source="{Binding URL}" VerticalOptions="FillAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

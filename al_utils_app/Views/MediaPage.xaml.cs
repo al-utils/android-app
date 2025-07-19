@@ -15,7 +15,7 @@ namespace al_utils_app.Views
     //TODO: additional details
     public partial class MediaPage : TabbedPage
     {
-        string query = $@"query ($id: Int) {{
+        string queryAnime = $@"query ($id: Int) {{
   Media(id: $id) {{ 
     id
     description
@@ -41,10 +41,15 @@ namespace al_utils_app.Views
     }}
     bannerImage
     genres
+    tags {{
+        name
+        rank
+    }}
     favourites
     averageScore
     popularity
     countryOfOrigin
+    siteUrl
     title {{
       romaji
       english
@@ -55,6 +60,7 @@ namespace al_utils_app.Views
         relationType (version: 2)
         node {{
           id
+          type
           format
           coverImage {{
             extraLarge
@@ -84,6 +90,81 @@ namespace al_utils_app.Views
   }}
 }}";
 
+        string queryManga = $@"query ($id: Int) {{
+  Media(id: $id) {{ 
+    id
+    description
+    startDate {{
+      year
+      month
+      day
+    }}
+    endDate {{
+      year
+      month
+      day
+    }}
+    status(version: 2)
+    format
+    chapters
+    volumes
+    coverImage {{
+      extraLarge
+      color
+    }}
+    bannerImage
+    genres
+    tags {{
+        name
+        rank
+    }}
+    favourites
+    averageScore
+    popularity
+    countryOfOrigin
+    siteUrl
+    title {{
+      romaji
+      english
+      native
+    }}
+    relations {{
+      edges {{
+        relationType (version: 2)
+        node {{
+          id
+          type
+          format
+          coverImage {{
+            extraLarge
+          }}
+          title {{
+            romaji
+            english
+			native
+          }}
+        }}
+      }}
+    }}
+    characters(sort: ROLE) {{
+      edges {{
+        role
+        node {{
+          id
+          name {{
+            full
+          }}
+          image {{
+            large
+          }}
+        }}
+      }}
+    }}
+  }}
+}}";
+
+        string queryCharacter = "";
+
         private int mediaID;
         private Dictionary<string, object> BuildVariables()
         {
@@ -92,14 +173,15 @@ namespace al_utils_app.Views
             return variables;
         }
 
-        public MediaPage(int mediaID)
+        internal MediaPage(int mediaID, TypeEnum.Type type)
         {
             this.mediaID = mediaID;
             InitializeComponent();
             BindingContext = this;
             backIcon.Source = ImageSource.FromResource("al_utils_app.Images.arrow-left.png");
+            menuIcon.Source = ImageSource.FromResource("al_utils_app.Images.menu.png");
 
-            FillData();
+            FillData(type);
         }
         private async void backIcon_Clicked(object sender, EventArgs e)
         {
@@ -112,8 +194,24 @@ namespace al_utils_app.Views
             await Navigation.PushAsync(new ImagePage(imageSource));
         }
 
-        private async Task<MediaDetails> GetData()
+        private async Task<MediaDetails> GetData(TypeEnum.Type type)
         {
+            string query;
+            switch (type)
+            {
+                case TypeEnum.Type.Anime:
+                    query = queryAnime;
+                    break;
+                case TypeEnum.Type.Manga:
+                    query = queryManga;
+                    break;
+                case TypeEnum.Type.Character:
+                    query = queryCharacter;
+                    break;
+                default:
+                    query = queryAnime;
+                    break;
+            }
             Response data = await Request.RequestDataAsync(query, BuildVariables());
             var dict = data.Data.Media;
             return dict;
@@ -127,9 +225,9 @@ namespace al_utils_app.Views
         private ObservableCollection<MediaEdge> RelatedMediaList { get; set; } = new ObservableCollection<MediaEdge>();
         private ObservableCollection<MediaEdge> RelatedCharacterList { get; set; } = new ObservableCollection<MediaEdge>();
 
-        private async Task FillData()
+        private async Task FillData(TypeEnum.Type type)
         {
-            MediaDetails details = await GetData();
+            MediaDetails details = await GetData(type);
                         
 
             Description = details.DescriptionFullFormat;
@@ -149,52 +247,94 @@ namespace al_utils_app.Views
             else
                 Title = details.Title.Romaji;
 
-                Favorites = "" + details.Favorites;
-            Popularity = "" + details.Popularity;
-            AverageScore = "" + details.AverageScore;
+            Favorites = "" + details.Favorites;
+            Id = details.Id;
+            SiteUrl = details.SiteUrl;
 
             RegionInfo rg = new RegionInfo(details.CountryOfOrigin);
-            Id = details.Id;
-            Origin = rg.EnglishName;
-            StartDate = details.StartDate.ToString();
-            EndDate = details.EndDate.ToString();
-            Season = UpperToCapitalize(details.Season) + " " + details.SeasonYear;
-            Format = details.GetFormat;
-            Status = details.GetStatus;
-            Episodes = "" + details.Episodes;
-            Duration = "" + details.Duration;
+            switch (type)
+            {
+                case TypeEnum.Type.Anime:
+                    Popularity = "" + details.Popularity;
+                    AverageScore = "" + details.AverageScore;
+                    Origin = rg.EnglishName;
+                    StartDate = details.StartDate.ToString();
+                    EndDate = details.EndDate.ToString();
+                    Season = UpperToCapitalize(details.Season) + " " + details.SeasonYear;
+                    Format = details.GetFormat;
+                    Status = details.GetStatus;
 
-            TitleRomaji = details.Title.Romaji;
-            TitleEnglish = details.Title.English;
-            TitleNative = details.Title.Native;
+                    Episodes = "" + details.Episodes;
+                    Duration = "" + details.Duration;
+
+                    TitleRomaji = details.Title.Romaji;
+                    TitleEnglish = details.Title.English;
+                    TitleNative = details.Title.Native;
+                    break;
+                case TypeEnum.Type.Manga:
+                    Popularity = "" + details.Popularity;
+                    AverageScore = "" + details.AverageScore;
+                    Origin = rg.EnglishName;
+                    StartDate = details.StartDate.ToString();
+                    EndDate = details.EndDate.ToString();
+                    Format = details.GetFormat;
+                    Status = details.GetStatus;
+
+                    Chapters = "" + details.Chapters;
+                    Volumes = "" + details.Volumes;
+
+                    TitleRomaji = details.Title.Romaji;
+                    TitleEnglish = details.Title.English;
+                    TitleNative = details.Title.Native;
+                    break;
+            }
+
 
 
             // create genres
             foreach (var genre in details.Genres)
             {
-                Frame f = new Frame()
-                {
-                    StyleClass = new List<string>() { "tagFrame" }
-                };
-                Label l = new Label()
-                {
-                    Text = genre,
-                    StyleClass = new List<string>() { "info" },
-                };
-                f.Content = l;
-                genresFlex.Children.Add(f);
-                BoxView b = new BoxView()
-                {
-                    BackgroundColor = Color.Transparent,
-                    WidthRequest = 15
-                };
-                genresFlex.Children.Add(f);
-                genresFlex.Children.Add(b);
+                AddTag(genre, "genreFrame");
+            }
+            
+            // create tags
+            foreach (var tag in details.Tags)
+            {
+                AddTag("" + tag.Name + " " + tag.Rank + "%", "tagFrame");
             }
 
             // relations list
             relatedMediaList.ItemsSource = details.Relations.Edge;
             relatedCharacterList.ItemsSource = details.Characters.Edge;
+        }
+
+        private void AddTag(string text, string styleClass)
+        {
+            StackLayout s = new StackLayout()
+            {
+                Orientation = StackOrientation.Horizontal
+            };
+            Frame f = new Frame()
+            {
+                StyleClass = new List<string>() { styleClass }
+            };
+            Label l = new Label()
+            {
+                Text = text,
+                StyleClass = new List<string>() { "info" },
+            };
+            f.Content = l;
+            //genresFlex.Children.Add(f);
+            BoxView b = new BoxView()
+            {
+                BackgroundColor = Color.Transparent,
+                WidthRequest = 15
+            };
+            s.Children.Add(f);
+            s.Children.Add(b);
+            genresFlex.Children.Add(s);
+            //genresFlex.Children.Add(f);
+            //genresFlex.Children.Add(b);
         }
 
         private FormattedString description;
@@ -387,6 +527,30 @@ namespace al_utils_app.Views
             }
         }
 
+        private string SiteUrl;
+
+        private string chapters;
+        public string Chapters
+        {
+            get { return chapters; }
+            set
+            {
+                chapters = value;
+                OnPropertyChanged(nameof(Chapters));
+            }
+        }
+
+        private string volumes;
+        public string Volumes
+        {
+            get { return volumes; }
+            set
+            {
+                volumes = value;
+                OnPropertyChanged(nameof(Volumes));
+            }
+        }
+
         private string titleRomaji;
         public string TitleRomaji
         {
@@ -433,8 +597,26 @@ namespace al_utils_app.Views
 
         private async void RelatedTapped(object sender, EventArgs e)
         {
-            var id = (int)((TappedEventArgs)e).Parameter;
-            await Navigation.PushAsync(new MediaPage(id));
+            var (id, type) = ((int,TypeEnum.Type))((TappedEventArgs)e).Parameter;
+            Console.WriteLine("" + id);
+            Console.WriteLine("" + (int)type);
+            await Navigation.PushAsync(new MediaPage(id, type));
+        }
+
+        private async void menuIcon_Clicked(object sender, EventArgs e)
+        {
+            var result = await DisplayActionSheet("Options", "Cancel", null, "Copy Link", "Open in WebView");
+            switch (result)
+            {
+                case "Cancel":
+                    break;
+                case "Copy Link":
+                    await Clipboard.SetTextAsync(SiteUrl);
+                    break;
+                case "Open in WebView":
+                    await Navigation.PushAsync(new WebViewPage(SiteUrl));
+                    break;
+            }
         }
     }
 }

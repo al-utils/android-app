@@ -355,7 +355,7 @@ namespace al_utils_app.Views
             // events
             gestureView.Tapped += async (s, e) =>
             {
-                await Application.Current.MainPage.Navigation.PushAsync(new MediaPage(mediaID));
+                await Application.Current.MainPage.Navigation.PushAsync(new MediaPage(mediaID, TypeEnum.Type.Anime));
             };
 
             gestureView.LongPressed += async (s, e) =>

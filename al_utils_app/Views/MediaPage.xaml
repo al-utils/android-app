@@ -13,6 +13,11 @@
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="TextColor" Value="White"/>
         </Style>
+        <Style Class="genreFrame" TargetType="Frame">
+            <Setter Property="BackgroundColor" Value="#3c3836"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
         <Style Class="tagFrame" TargetType="Frame">
             <Setter Property="BackgroundColor" Value="#262524"/>
             <Setter Property="Padding" Value="20,10"/>
@@ -40,15 +45,32 @@
                             AbsoluteLayout.LayoutBounds="0,0,1,225"
                             AbsoluteLayout.LayoutFlags="WidthProportional"/>
                         <Frame BackgroundColor="#000" 
-                            Opacity="0.45"
-                            AbsoluteLayout.LayoutBounds="0,0,1,225"
-                            AbsoluteLayout.LayoutFlags="WidthProportional"/>
-                        <ImageButton x:Name="backIcon" 
-                                    Aspect="AspectFit" 
-                                    BackgroundColor="Transparent" 
-                                    CornerRadius="10" 
-                                    Clicked="backIcon_Clicked"
-                                    AbsoluteLayout.LayoutBounds="25,25,30,30"/>
+                               Opacity="0.45"
+                               AbsoluteLayout.LayoutBounds="0,0,1,225"
+                               AbsoluteLayout.LayoutFlags="WidthProportional"
+                               CornerRadius="0"/>
+
+                        <StackLayout Orientation="Horizontal"
+                                     AbsoluteLayout.LayoutFlags="WidthProportional"
+                                     AbsoluteLayout.LayoutBounds="0,25,1,30">
+                            <ImageButton x:Name="backIcon" 
+                                         Aspect="AspectFit" 
+                                         BackgroundColor="Transparent" 
+                                         CornerRadius="10" 
+                                         Margin="25,0,0,0"
+                                         HorizontalOptions="Start"
+                                         Clicked="backIcon_Clicked"/>
+                            <BoxView HorizontalOptions="FillAndExpand"
+                                     BackgroundColor="Transparent"/>
+                            <ImageButton x:Name="menuIcon" 
+                                         Aspect="AspectFit" 
+                                         BackgroundColor="Transparent" 
+                                         CornerRadius="10" 
+                                         Margin="0,0,25,0"
+                                         HorizontalOptions="End"
+                                         Clicked="menuIcon_Clicked"/>
+                        </StackLayout>
+
                         <StackLayout AbsoluteLayout.LayoutBounds="0,70,1,180"
                                     AbsoluteLayout.LayoutFlags="WidthProportional,XProportional"
                                     Margin="15,0"
@@ -75,10 +97,8 @@
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                                 </Label.GestureRecognizers>
                             </Label>
-    
                         </StackLayout>
-    
-    
+
                     </AbsoluteLayout>
     
                         <Label x:Name="descriptionLabel" 
@@ -156,6 +176,13 @@
                             StyleClass="info"/>
     
                         <BoxView StyleClass="hr"/>
+
+                        <Label Text="{Binding Chapters, StringFormat='Chapters: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding Volumes, StringFormat='Volumes: {0}'}" 
+                            StyleClass="info"/>
+                        
+                        <BoxView StyleClass="hr"/>
     
                         <Label Text="{Binding TitleRomaji, StringFormat='Title Romaji: {0}'}" 
                             StyleClass="info"/>
@@ -197,7 +224,7 @@
 
     <ContentPage Title="Related">
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
-            <Frame BackgroundColor="{Binding CoverImageColor}" Padding="0">
+            <Frame BackgroundColor="{Binding CoverImageColor}" Padding="0" CornerRadius="0">
                 <Frame Background="#73000000">
                     <Label Text="Related" StyleClass="heading"/>
                 </Frame>
@@ -229,7 +256,7 @@
                                                FontSize="16"/>
                                     </StackLayout>
                                     <StackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="RelatedTapped"  CommandParameter="{Binding Node.Id}"/>
+                                        <TapGestureRecognizer Tapped="RelatedTapped" CommandParameter="{Binding Node.OpenInfo}"/>
                                     </StackLayout.GestureRecognizers>
                                 </StackLayout>
                             </Frame>
@@ -245,7 +272,7 @@
     
     <ContentPage Title="Characters">
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
-            <Frame BackgroundColor="{Binding CoverImageColor}" Padding="0">
+            <Frame BackgroundColor="{Binding CoverImageColor}" Padding="0" CornerRadius="0">
                 <Frame Background="#73000000">
                     <Label Text="Characters" StyleClass="heading"/>
                 </Frame>

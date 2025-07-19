@@ -20,7 +20,7 @@ namespace al_utils_app.Views
 
         private async void webViewButton_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new WebViewPage("https://anilist.co/api/v2/oauth/authorize?client_id=28257&response_type=token"));
+            await Navigation.PushAsync(new WebViewPage("https://anilist.co/api/v2/oauth/authorize?client_id=28257&response_type=token", "Login to Anilist"));
             receivedToken.IsVisible = true;
         }
 

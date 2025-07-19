@@ -92,7 +92,7 @@ namespace al_utils_app.Views
         private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             var id = (int)((TappedEventArgs)e).Parameter;
-            await Navigation.PushAsync(new MediaPage(id));
+            await Navigation.PushAsync(new MediaPage(id, TypeEnum.Type.Anime));
         }
 
         private void ImageButton_Clicked(object sender, EventArgs e)

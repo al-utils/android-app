@@ -32,6 +32,23 @@ namespace al_utils_app.Models
                 OnPropertyChanged();
             }
         }
+        [JsonPropertyName("type")]
+        public string Type { get; set; }
+        public TypeEnum.Type GetMediaType
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case "ANIME":
+                        return TypeEnum.Type.Anime;
+                    case "MANGA":
+                        return TypeEnum.Type.Manga;
+                    default:
+                        return TypeEnum.Type.Anime;
+                }
+            }
+        }
         [JsonPropertyName("episodes")]
         public int? Episodes { get; set; }
 
@@ -52,6 +69,14 @@ namespace al_utils_app.Models
         [JsonPropertyName("nextAiringEpisode")]
         public MediaAiringSchedule Airing { get; set; }
 
+
+        public (int, TypeEnum.Type) OpenInfo
+        {
+            get
+            {
+                return (Id, GetMediaType);
+            }
+        }
 
 
 
@@ -191,6 +216,8 @@ namespace al_utils_app.Models
 
         [JsonPropertyName("genres")]
         public List<string> Genres { get; set; }
+        [JsonPropertyName("tags")]
+        public List<MediaTag> Tags { get; set; }
         [JsonPropertyName("favourites")]
         public int Favorites { get; set; }
         [JsonPropertyName("averageScore")]
@@ -199,6 +226,8 @@ namespace al_utils_app.Models
         public int? Popularity { get; set; }
         [JsonPropertyName("countryOfOrigin")]
         public string CountryOfOrigin { get; set; }
+        [JsonPropertyName("siteUrl")]
+        public string SiteUrl { get; set; }
 
 
 
@@ -216,6 +245,13 @@ namespace al_utils_app.Models
         public CharacterName Name { get; set; }
         [JsonPropertyName("image")]
         public CharacterImage Image { get; set; }
+        
+        // manga
+        [JsonPropertyName("chapters")]
+        public int? Chapters { get; set; }
+        [JsonPropertyName("volumes")]
+        public int? Volumes { get; set; }
+
 
 
 
