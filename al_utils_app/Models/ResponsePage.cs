@@ -13,6 +13,9 @@ namespace al_utils_app.Models
         [JsonPropertyName("media")]
         public List<MediaDetails> Results { get; set; }
 
+        [JsonPropertyName("activities")]
+        public List<Activity> Activities { get; set; }
+
         public override string ToString()
         {
             return "page";

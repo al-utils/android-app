@@ -13,6 +13,8 @@ using Xamarin.Essentials;
 using System.Windows.Input;
 using MultiGestureViewPlugin;
 using al_utils_app.Models;
+using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace al_utils_app.Views
 {
@@ -24,6 +26,7 @@ namespace al_utils_app.Views
         private const int maxPages = 10; // idk
 
         private string currentUser = Preferences.Get("currentUser", "");
+        private int userId = Preferences.Get("userId", -1);
 
         // todo:
         // username
@@ -63,6 +66,39 @@ namespace al_utils_app.Views
             return s + "}";
         }
 
+        public string BuildActivityQuery(int page)
+        {
+            var s = $@"query {{
+  Page(page: {page}, perPage: 50) {{
+    activities(userId: {userId}, sort: ID_DESC) {{
+      __typename
+      ... on ListActivity{{
+        id
+        status
+        progress
+        createdAt
+        media {{
+          id
+          coverImage {{
+            extraLarge
+          }}
+          title {{
+            romaji
+            english
+            native
+          }}
+        }}
+        likes {{
+          id
+        }}
+      }}
+    }}
+  }}
+}}
+";
+            return s;
+        }
+
         private Dictionary<string, object> BuildVariables()
         {
             Dictionary<string, object> variables = new Dictionary<string, object>();
@@ -99,6 +135,31 @@ namespace al_utils_app.Views
                 return mediaList.Where(x => x.Details.Status == status).ToList();
 
             return mediaList;
+        }
+
+        private static readonly int activityPageNum = 1;
+        private async Task<List<Activity>> GetActivityData()
+        {
+            Debug.WriteLine("woeifjwofiej");
+            Response data = await Request.RequestDataAsync(BuildActivityQuery(activityPageNum), new Dictionary<string, object>());
+            Debug.WriteLine("woeifjwofiej");
+            Debug.WriteLine(data);
+            return data.Data.Page.Activities;
+        }
+
+        private ObservableCollection<Activity> ActivityList { get; set; } = new ObservableCollection<Activity>();
+        public async Task CreateActivities()
+        {
+            List<Activity> activities = await GetActivityData();
+            Debug.WriteLine("EOIFJEOIFj");
+            Debug.WriteLine(activities.Count);
+            foreach (Activity activity in activities)
+            {
+                Debug.WriteLine(activity.Id);
+            }
+            activityList.ItemsSource = activities;
+            // banner.Source = user.BannerURL;
+            // about.Text = user.About;
         }
 
         public async Task CreateCards()
@@ -196,11 +257,11 @@ namespace al_utils_app.Views
                 return;
             }
 
-            var page = "RELEASING";
+            var status = "RELEASING";
             if (g == notYetReleasedGrid)
-                page = "NOT_YET_RELEASED";
+                status = "NOT_YET_RELEASED";
 
-            List<MediaListEntry> mediaList = await GetData(page);
+            List<MediaListEntry> mediaList = await GetData(status);
             for (int i = 0; i < g.Children.Count; i++)
             {
                 MediaListEntry media = mediaList[i];
@@ -329,11 +390,7 @@ namespace al_utils_app.Views
             var progress = media.Progress;
             var mediaID = media.Details.Id;
 
-            var title = "";
-            if (media.Details.Title.English != null)
-                title = media.Details.Title.English;
-            else
-                title = media.Details.Title.Romaji;
+            var title = media.Details.Title.GetTitle;
 
             var episodes = "";
             if (media.Details.Episodes == null)
@@ -470,6 +527,7 @@ namespace al_utils_app.Views
 
         public MainPage(string user="")
         {
+            Console.Out.WriteLine("EF:OEIFJ:EOIFJE:OFIJE:OFj");
             InitializeComponent();
             BindingContext = this;
             Hidden.LoadHiddenList();
@@ -487,8 +545,15 @@ namespace al_utils_app.Views
                 UpdateData(notYetReleasedGrid);
                 refreshView2.IsRefreshing = false;
             });
+            ICommand refreshCommand3 = new Command(() =>
+            {
+                //UpdateData(notYetReleasedGrid);
+                refreshView3.IsRefreshing = false;
+            });
             refreshView.Command = refreshCommand;
             refreshView2.Command = refreshCommand2;
+            refreshView3.Command = refreshCommand3;
+
 
             if (user != "")
                 //{
@@ -498,6 +563,7 @@ namespace al_utils_app.Views
                 //}
                 currentUser = user;
             CreateCards();
+            CreateActivities();
         }
 
         protected override async void OnAppearing()
@@ -582,13 +648,13 @@ namespace al_utils_app.Views
 
         private async void menuIcon_Clicked(object sender, EventArgs e)
         {
-            var result = await DisplayActionSheet("Menu", "Cancel", null, "Change User", "Search Media", "Settings");
-            Console.WriteLine(result);
+            var result = await DisplayActionSheet("Menu", "Cancel", null, "Search User", "Search Media", "Settings");
+            Console.Out.WriteLine(result);
             switch (result)
             {
                 case "Cancel":
                     break;
-                case "Change User":
+                case "Search User":
                     await DisplaySearchUserPrompt();
                     break;
                 case "Search Media":
@@ -624,6 +690,11 @@ namespace al_utils_app.Views
         private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             await DisplaySearchUserPrompt();
+        }
+
+        private void CollectionView_RemainingItemsThresholdReached(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -127,9 +127,46 @@
         </StackLayout>
     </ContentPage>
 
-    <ContentPage Title="User Profile">
+    <ContentPage Title="Activity">
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
-            
+            <!--
+            <Image x:Name="banner" Aspect="AspectFill" HeightRequest="140"/>
+            <Label x:Name="about"/>
+            -->
+            <RefreshView x:Name="refreshView3" 
+                         IsRefreshing="{Binding IsRefreshing}" 
+                         Command="{Binding RefreshCommand}">
+                <CollectionView x:Name="activityList" 
+                                ItemsSource="{Binding ActivityList}" 
+                                RemainingItemsThreshold="5" 
+                                RemainingItemsThresholdReached="CollectionView_RemainingItemsThresholdReached">
+                    <CollectionView.Header>
+                        <StackLayout HeightRequest="20"/>
+                    </CollectionView.Header>
+                    <CollectionView.Footer>
+                        <StackLayout HeightRequest="20"/>
+                    </CollectionView.Footer>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout HeightRequest="150" Padding="20,0,20,20">
+                                <Frame BackgroundColor="#3c3836" HeightRequest="1000" Padding="0" CornerRadius="10">
+                                    <StackLayout Orientation="Horizontal">
+                                        <Image Source="{Binding Media.CoverImage.ExtraLarge}" WidthRequest="100" Aspect="AspectFill"/>
+                                        <StackLayout Margin="10">
+                                            <Label Text="{Binding GetActivityMessage}"
+                                                   FontFamily="Jost"
+                                                   FontSize="18"/>
+                                            <Label Text="{Binding CreatedAt}"
+                                                   FontFamily="Jost"
+                                                   FontSize="15"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </Frame>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
         </StackLayout>
     </ContentPage>
 

@@ -43,6 +43,8 @@ namespace al_utils_app.Views
             return $@"
                 query{{
     Viewer{{
+        name
+        id
         options{{
             titleLanguage
         }}
@@ -54,15 +56,19 @@ namespace al_utils_app.Views
         private async void submitButton_Clicked(object sender, EventArgs e)
         {
             var token = textbox.Text;
-            Console.WriteLine("test" + token);
+            // check authorized
             Response r = await Request.RequestDataAsync(BuildQuery(), new Dictionary<string, object>(), token);
-            Console.WriteLine("test2");
             if (r != null)
             {
                 Authentication.SaveAccessToken(token);
 
+                var username = r.Data.Viewer.Name;
+                var userId = r.Data.Viewer.Id;
+                Preferences.Set("currentUser", username);
+                Preferences.Set("userId", userId);
+
                 var rootPage = Navigation.NavigationStack.ToList()[0];
-                Navigation.InsertPageBefore(new MainPage(), rootPage);
+                Navigation.InsertPageBefore(new MainPage(username), rootPage);
                 await Navigation.PopToRootAsync();
             }
             else

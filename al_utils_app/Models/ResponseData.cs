@@ -25,5 +25,8 @@ namespace al_utils_app.Models
 
         [JsonPropertyName("Media")]
         public MediaDetails Media { get; set; }
+
+        [JsonPropertyName("Viewer")]
+        public Viewer Viewer { get; set; }
     }
 }
