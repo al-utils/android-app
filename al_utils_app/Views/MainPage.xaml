@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:multigestureviewplugin="clr-namespace:MultiGestureViewPlugin;assembly=MultiGestureViewPlugin"
             x:Class="al_utils_app.Views.MainPage"
             BarBackgroundColor="#262524"
             SelectedTabColor="White"
@@ -129,10 +129,6 @@
 
     <ContentPage Title="Activity">
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
-            <!--
-            <Image x:Name="banner" Aspect="AspectFill" HeightRequest="140"/>
-            <Label x:Name="about"/>
-            -->
             <RefreshView x:Name="refreshView3" 
                          IsRefreshing="{Binding IsRefreshing}" 
                          Command="{Binding RefreshCommand}">
@@ -148,18 +144,32 @@
                     </CollectionView.Footer>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <StackLayout HeightRequest="150" Padding="20,0,20,20">
-                                <Frame BackgroundColor="#3c3836" HeightRequest="1000" Padding="0" CornerRadius="10">
+                            <StackLayout HeightRequest="140" Padding="20,0,20,20">
+                                <Frame BackgroundColor="#3c3836" HeightRequest="10000" Padding="0" CornerRadius="10">
                                     <StackLayout Orientation="Horizontal">
                                         <Image Source="{Binding Media.CoverImage.ExtraLarge}" WidthRequest="100" Aspect="AspectFill"/>
-                                        <StackLayout Margin="10">
+                                        <StackLayout Margin="10, 10, 20, 10" HorizontalOptions="FillAndExpand">
                                             <Label Text="{Binding GetActivityMessage}"
                                                    FontFamily="Jost"
-                                                   FontSize="18"/>
-                                            <Label Text="{Binding CreatedAt}"
-                                                   FontFamily="Jost"
-                                                   FontSize="15"/>
+                                                   FontSize="18"
+                                                   TextColor="White"
+                                                   VerticalOptions="StartAndExpand"/>
+                                            <StackLayout Orientation="Horizontal" VerticalOptions="End">
+                                                <Label Text="{Binding GetRelativeTime}"
+                                                       FontFamily="Jost"
+                                                       FontSize="15"
+                                                       TextColor="#c6c3bb"
+                                                       HorizontalOptions="StartAndExpand"/>
+                                                <Label Text="{Binding Likes.Count,StringFormat='{0} Likes'}"
+                                                       FontFamily="Jost"
+                                                       FontSize="15"
+                                                       TextColor="#c6c3bb"
+                                                       HorizontalOptions="End"/>
+                                            </StackLayout>
                                         </StackLayout>
+                                        <StackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1" CommandParameter="{Binding Media.Id}"/>
+                                        </StackLayout.GestureRecognizers>
                                     </StackLayout>
                                 </Frame>
                             </StackLayout>
