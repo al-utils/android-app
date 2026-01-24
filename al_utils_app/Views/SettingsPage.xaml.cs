@@ -107,7 +107,7 @@ namespace al_utils_app.Views
             hiddenList.ItemsSource = HiddenList;
 
             // reload mainpage
-            home.CreateCards();
+            //home.CreateCards(); // TODO: what is this?
         }
 
         private async void logoutButton_Clicked(object sender, EventArgs e)

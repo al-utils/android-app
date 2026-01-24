@@ -68,6 +68,27 @@ namespace al_utils_app.Models
         }
         [JsonPropertyName("nextAiringEpisode")]
         public MediaAiringSchedule Airing { get; set; }
+        public string GetNextEpisodeString
+        {
+            get
+            {
+                return "Ep " + Airing.Episode + 
+                    ": " + SecondsToString((int)Airing.TimeUntilAiring);
+            }
+        }
+        public string GetEpisodes
+        {
+            get
+            {
+                return (Episodes == null) ? "?" : "" + Episodes;
+            }
+        }
+        private string SecondsToString(int s)
+        {
+            int d = s / (3600 * 24);
+            int h = s % (3600 * 24) / 3600;
+            return "" + d + "d" + h + "h";
+        }
 
 
         public (int, TypeEnum.Type) OpenInfo

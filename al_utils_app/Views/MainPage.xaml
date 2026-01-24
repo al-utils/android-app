@@ -2,6 +2,7 @@
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:multigestureviewplugin="clr-namespace:MultiGestureViewPlugin;assembly=MultiGestureViewPlugin"
             x:Class="al_utils_app.Views.MainPage"
+            xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
             BarBackgroundColor="#262524"
             SelectedTabColor="White"
             UnselectedTabColor="#888888"
@@ -83,23 +84,63 @@
     <ContentPage Title="{Binding ReleasingCount, StringFormat='Releasing ({0})'}">
     -->
     <ContentPage Title="{Binding ReleasingCount, StringFormat='Releasing ({0})'}">
-
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
             <RefreshView x:Name="refreshView"
                      IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshCommand}">
                 <ScrollView>
-                    <Grid x:Name="releasedGrid" StyleClass="grid">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <!--
-                        <Grid.RowDefinitions>
-                        <RowDefinition Height="320"/>
-                        </Grid.RowDefinitions>
-                        -->
-                    </Grid>
+                    <FlexLayout AlignContent="Start" Wrap="Wrap" x:Name="releasedGrid" BindableLayout.ItemsSource="{Binding releasedList}"
+                            Direction="Row" Padding="8">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <multigestureviewplugin:MultiGestureView VibrateOnTap="false" VibrateOnLongPress="true"
+                                    Margin="8" HeightRequest="320" WidthRequest="200"
+                                    LongPressedCommand="{Binding Path=BindingContext.LongPressCommand, Source={x:Reference releasedGrid}}"
+                                    LongPressedCommandParameter="{Binding .}"
+                                    TappedCommand="{Binding Path=BindingContext.TapCommand, Source={x:Reference releasedGrid}}"
+                                    TappedCommandParameter="{Binding .}">
+                                    <Frame Padding="0" CornerRadius="8">
+                                        <AbsoluteLayout>
+                                            <!--cover image-->
+                                            <Image Source="{Binding Details.CoverImage.ExtraLarge}" Aspect="AspectFill"
+                                                   AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All"/>
+                                            
+                                            <!--gradient-->
+                                            <Frame AbsoluteLayout.LayoutBounds="0,0,1,1.01" AbsoluteLayout.LayoutFlags="All">
+                                                <Frame.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                        <GradientStop Color="Transparent" Offset="0"/>
+                                                        <GradientStop Color="Transparent" Offset="0"/>
+                                                        <GradientStop Color="Transparent" Offset="0"/>
+                                                        <GradientStop Color="#90151515" Offset="0"/>
+                                                        <GradientStop Color="#151515" Offset="0"/>
+                                                    </LinearGradientBrush>
+                                                </Frame.Background>
+                                            </Frame>
+                                            <StackLayout Orientation="Vertical" VerticalOptions="End" Padding="17"
+                                                         AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All"> <!--details-->
+                                                <Label Text="{Binding Details.Title.GetTitle}" FontSize="18" TextColor="White" FontFamily="Jost" 
+                                                       LineBreakMode="TailTruncation" MaxLines="2"/> <!--title-->
+                                                <StackLayout Orientation="Horizontal" Spacing="0">
+                                                    <Label Text="{Binding Details.GetNextEpisodeString}" FontSize="16" HorizontalOptions="StartAndExpand"
+                                                           TextColor="White" FontFamily="Jost"/>
+                                                    <Ellipse HorizontalOptions="End" VerticalOptions="Center"
+                                                             Margin="5" HeightRequest="12" WidthRequest="12"
+                                                             IsVisible="{Binding IsBehindProgress}">
+                                                        <Ellipse.Fill>
+                                                            <SolidColorBrush Color="#d84646"/>
+                                                        </Ellipse.Fill>
+                                                    </Ellipse>
+                                                    <Label Text="{Binding GetProgressString}" FontSize="16" HorizontalOptions="End"
+                                                           TextColor="#959595" FontFamily="Jost"/>
+                                                </StackLayout>
+                                            </StackLayout>
+                                        </AbsoluteLayout>
+                                    </Frame>
+                                </multigestureviewplugin:MultiGestureView>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
                 </ScrollView>
             </RefreshView>
         </StackLayout>
@@ -111,17 +152,58 @@
                      IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshCommand}">
                 <ScrollView>
-                    <Grid x:Name="notYetReleasedGrid" StyleClass="grid">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <!--
-                        <Grid.RowDefinitions>
-                        <RowDefinition Height="320"/>
-                        </Grid.RowDefinitions>
-                        -->
-                    </Grid>
+                    <FlexLayout AlignContent="Start" Wrap="Wrap" x:Name="notYetReleasedGrid" BindableLayout.ItemsSource="{Binding notYetReleasedList}"
+                        Direction="Row" Padding="8">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <multigestureviewplugin:MultiGestureView VibrateOnTap="false" VibrateOnLongPress="true"
+                                    Margin="8" HeightRequest="320" WidthRequest="200"
+                                    LongPressedCommand="{Binding Path=BindingContext.LongPressCommand, Source={x:Reference notYetReleasedGrid}}"
+                                    LongPressedCommandParameter="{Binding .}"
+                                    TappedCommand="{Binding Path=BindingContext.TapCommand, Source={x:Reference notYetReleasedGrid}}"
+                                    TappedCommandParameter="{Binding .}">
+                                    <Frame Padding="0" CornerRadius="8">
+                                        <AbsoluteLayout>
+                                            <!--cover image-->
+                                            <Image Source="{Binding Details.CoverImage.ExtraLarge}" Aspect="AspectFill"
+                                                   AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All"/>
+                                            
+                                            <!--gradient-->
+                                            <Frame AbsoluteLayout.LayoutBounds="0,0,1,1.01" AbsoluteLayout.LayoutFlags="All">
+                                                <Frame.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                        <GradientStop Color="Transparent" Offset="0"/>
+                                                        <GradientStop Color="Transparent" Offset="0"/>
+                                                        <GradientStop Color="Transparent" Offset="0"/>
+                                                        <GradientStop Color="#90151515" Offset="0"/>
+                                                        <GradientStop Color="#151515" Offset="0"/>
+                                                    </LinearGradientBrush>
+                                                </Frame.Background>
+                                            </Frame>
+                                            <StackLayout Orientation="Vertical" VerticalOptions="End" Padding="17"
+                                                         AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All"> <!--details-->
+                                                <Label Text="{Binding Details.Title.GetTitle}" FontSize="18" TextColor="White" FontFamily="Jost" 
+                                                       LineBreakMode="TailTruncation" MaxLines="2"/> <!--title-->
+                                                <StackLayout Orientation="Horizontal" Spacing="0">
+                                                    <Label Text="{Binding Details.GetNextEpisodeString}" FontSize="16" HorizontalOptions="StartAndExpand"
+                                                           TextColor="White" FontFamily="Jost"/>
+                                                    <Ellipse HorizontalOptions="End" VerticalOptions="Center"
+                                                             Margin="5" HeightRequest="12" WidthRequest="12"
+                                                             IsVisible="{Binding IsBehindProgress}">
+                                                        <Ellipse.Fill>
+                                                            <SolidColorBrush Color="#d84646"/>
+                                                        </Ellipse.Fill>
+                                                    </Ellipse>
+                                                    <Label Text="{Binding GetProgressString}" FontSize="16" HorizontalOptions="End"
+                                                           TextColor="#959595" FontFamily="Jost"/>
+                                                </StackLayout>
+                                            </StackLayout>
+                                        </AbsoluteLayout>
+                                    </Frame>
+                                </multigestureviewplugin:MultiGestureView>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
                 </ScrollView>
             </RefreshView>
         </StackLayout>
