@@ -1,6 +1,7 @@
 ﻿using al_utils_app.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -45,16 +46,19 @@ namespace al_utils_app.ViewModels
             return s + "}";
         }
         private static string currentUser = Preferences.Get("currentUser", "");
-        private static Dictionary<string, object> BuildVariables()
+        private static Dictionary<string, object> BuildVariables(string user)
         {
             Dictionary<string, object> variables = new Dictionary<string, object>();
-            variables.Add("name", currentUser);
+            variables.Add("name", user);
             return variables;
         }
 
-        public static async Task<List<MediaListEntry>> GetData(string status = null)
+        public static async Task<(List<MediaListEntry>, string)> GetData(string user = null)
         {
-            Response data = await Request.RequestDataAsync(API.BuildQuery(), API.BuildVariables());
+            if (user == null)
+                user = currentUser;
+
+            Response data = await Request.RequestDataAsync(API.BuildQuery(), API.BuildVariables(user));
 
             var dict = data.Data.Pages;
             List<MediaListEntry> mediaList = new List<MediaListEntry>();
@@ -75,12 +79,12 @@ namespace al_utils_app.ViewModels
                                  .OrderBy(x => x.Details.Airing.TimeUntilAiring)
                                  .ToList();
 
-            Console.Out.WriteLine("MediaList Count: " + mediaList.Count);
+            //Console.Out.WriteLine("MediaList Count: " + mediaList.Count);
 
-            if (status == "RELEASING" || status == "NOT_YET_RELEASED")
-                return mediaList.Where(x => x.Details.Status == status).ToList();
+            //if (status == "RELEASING" || status == "NOT_YET_RELEASED")
+            //    return (mediaList.Where(x => x.Details.Status == status).ToList(), currentUser);
 
-            return mediaList;
+            return (mediaList, user);
         }
     }
 }

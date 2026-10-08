@@ -30,7 +30,6 @@ namespace al_utils_app.Views
         private int userId = Preferences.Get("userId", -1);
 
         // todo:
-        // username
         // completed but current
         // full schedule
         
@@ -70,10 +69,7 @@ namespace al_utils_app.Views
         private static readonly int activityPageNum = 1;
         private async Task<List<Activity>> GetActivityData()
         {
-            //Debug.WriteLine("woeifjwofiej");
             Response data = await Request.RequestDataAsync(BuildActivityQuery(activityPageNum), new Dictionary<string, object>());
-            //Debug.WriteLine("woeifjwofiej");
-            Debug.WriteLine(data);
             return data.Data.Page.Activities;
         }
 
@@ -81,15 +77,7 @@ namespace al_utils_app.Views
         public async Task CreateActivities()
         {
             List<Activity> activities = await GetActivityData();
-            Debug.WriteLine("EOIFJEOIFj");
-            Debug.WriteLine(activities.Count);
-            foreach (Activity activity in activities)
-            {
-                Debug.WriteLine(activity.Id);
-            }
             activityList.ItemsSource = activities;
-            // banner.Source = user.BannerURL;
-            // about.Text = user.About;
         }
 
         private string forUser;
@@ -126,7 +114,7 @@ namespace al_utils_app.Views
         }
 
         private MainPageViewModel viewModel;
-        public MainPage(string user="")
+        public MainPage(string user = null)
         {
             Console.Out.WriteLine("EF:OEIFJ:EOIFJE:OFIJE:OFj");
             InitializeComponent();
@@ -156,15 +144,15 @@ namespace al_utils_app.Views
             refreshView3.Command = refreshCommand3;
 
 
-            if (user != "")
-                //{
-                //    // search for user
-                //    DisplaySearchUserPrompt(true);
+            //if (user != "")
+            //    //{
+            //    //    // search for user
+            //    //    DisplaySearchUserPrompt(true);
 
-                //}
-                currentUser = user;
+            //    //}
+            //    currentUser = user;
 
-            viewModel = new MainPageViewModel(this);
+            viewModel = new MainPageViewModel(this, user);
             releasedGrid.BindingContext = viewModel;
             notYetReleasedGrid.BindingContext = viewModel;
 
@@ -266,7 +254,7 @@ namespace al_utils_app.Views
             }
             jsonString = await response.Content.ReadAsStringAsync();
 
-            Console.Out.WriteLine(jsonString);
+            Debug.WriteLine(jsonString);
 
             Response data = JsonSerializer.Deserialize<Response>(jsonString);
             User user = data.Data.User;

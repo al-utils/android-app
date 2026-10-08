@@ -47,15 +47,17 @@ namespace al_utils_app.ViewModels
         }
 
         private MainPage instance;
-        public MainPageViewModel(MainPage instance)
+        private string user;
+        public MainPageViewModel(MainPage instance, string user = null)
         {
             this.instance = instance;
-            LoadData();
+            this.user = user;
+            LoadData(user);
         }
 
-        public async Task LoadData()
+        public async Task LoadData(string user = null)
         {
-            mediaList = await API.GetData();
+            (List<MediaListEntry> mediaList, string loadedUser) = await API.GetData(user);
             ReleasingList = new ObservableCollection<MediaListEntry>(
                 mediaList.Where(x => x.Details.Status == "RELEASING")
                          .Where(x => x.Details.Airing != null)
@@ -66,6 +68,7 @@ namespace al_utils_app.ViewModels
                          .Where(x => x.Details.Airing != null)
                          .Where(x => !Hidden.IsHidden(x.Details.Id))
                          .ToList());
+            instance.ForUser = loadedUser;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -76,7 +79,7 @@ namespace al_utils_app.ViewModels
 
         public async Task OnAppearing()
         {
-            await LoadData();
+            await LoadData(user);
         }
 
         public ICommand LongPressCommand
