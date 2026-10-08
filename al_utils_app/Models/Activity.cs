@@ -7,6 +7,8 @@ namespace al_utils_app.Models
 {
     internal class Activity
     {
+        [JsonPropertyName("__typename")]
+        public string TypeName { get; set; }
         [JsonPropertyName("id")]
         public int Id { get; set; }
         [JsonPropertyName("status")]

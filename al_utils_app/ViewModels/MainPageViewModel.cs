@@ -45,19 +45,33 @@ namespace al_utils_app.ViewModels
                 }
             }
         }
+        private ObservableCollection<Activity> _activityList;
+        public ObservableCollection<Activity> ActivityList
+        {
+            get { return _activityList; }
+            set
+            {
+                if (_activityList != value)
+                {
+                    _activityList = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("ActivityList"));
+                }
+            }
+        }
 
         private MainPage instance;
-        private string user;
-        public MainPageViewModel(MainPage instance, string user = null)
+        private User user;
+        public MainPageViewModel(MainPage instance, User user = null)
         {
             this.instance = instance;
             this.user = user;
             LoadData(user);
         }
 
-        public async Task LoadData(string user = null)
+        public async Task LoadData(User user = null)
         {
-            (List<MediaListEntry> mediaList, string loadedUser) = await API.GetData(user);
+            (List<MediaListEntry> mediaList, List<Activity> activityList, User loadedUser) = await API.GetData(user);
             ReleasingList = new ObservableCollection<MediaListEntry>(
                 mediaList.Where(x => x.Details.Status == "RELEASING")
                          .Where(x => x.Details.Airing != null)
@@ -68,7 +82,8 @@ namespace al_utils_app.ViewModels
                          .Where(x => x.Details.Airing != null)
                          .Where(x => !Hidden.IsHidden(x.Details.Id))
                          .ToList());
-            instance.ForUser = loadedUser;
+            ActivityList = new ObservableCollection<Activity>(activityList.ToList());
+            instance.ForUser = loadedUser.Name;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

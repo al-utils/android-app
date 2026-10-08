@@ -66,9 +66,10 @@ namespace al_utils_app.Views
                 var userId = r.Data.Viewer.Id;
                 Preferences.Set("currentUser", username);
                 Preferences.Set("userId", userId);
+                User user = new User(username, userId);
 
                 var rootPage = Navigation.NavigationStack.ToList()[0];
-                Navigation.InsertPageBefore(new MainPage(username), rootPage);
+                Navigation.InsertPageBefore(new MainPage(user), rootPage);
                 await Navigation.PopToRootAsync();
             }
             else

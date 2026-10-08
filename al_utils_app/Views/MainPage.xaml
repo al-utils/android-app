@@ -85,11 +85,13 @@
     -->
     <ContentPage Title="{Binding ReleasingCount, StringFormat='Releasing ({0})'}">
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
-            <RefreshView x:Name="refreshView"
+            <RefreshView x:Name="refreshView">
+                <!--
                      IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshCommand}">
+                     -->
                 <ScrollView>
-                    <FlexLayout AlignContent="Start" Wrap="Wrap" x:Name="releasedGrid" BindableLayout.ItemsSource="{Binding releasedList}"
+                    <FlexLayout AlignContent="Start" Wrap="Wrap" x:Name="releasedGrid"
                             Direction="Row" Padding="8">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
@@ -148,11 +150,13 @@
 
     <ContentPage Title="{Binding NotYetReleasedCount, StringFormat='Upcoming ({0})'}">
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
-            <RefreshView x:Name="refreshView2"
+            <RefreshView x:Name="refreshView2">
+                <!--
                      IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshCommand}">
+                     -->
                 <ScrollView>
-                    <FlexLayout AlignContent="Start" Wrap="Wrap" x:Name="notYetReleasedGrid" BindableLayout.ItemsSource="{Binding notYetReleasedList}"
+                    <FlexLayout AlignContent="Start" Wrap="Wrap" x:Name="notYetReleasedGrid"
                         Direction="Row" Padding="8">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
@@ -211,11 +215,12 @@
 
     <ContentPage Title="Activity">
         <StackLayout Spacing="0" BackgroundColor="#c6c3bb">
-            <RefreshView x:Name="refreshView3" 
+            <RefreshView x:Name="refreshView3" >
+                <!--
                          IsRefreshing="{Binding IsRefreshing}" 
                          Command="{Binding RefreshCommand}">
+                         -->
                 <CollectionView x:Name="activityList" 
-                                ItemsSource="{Binding ActivityList}" 
                                 RemainingItemsThreshold="5" 
                                 RemainingItemsThresholdReached="CollectionView_RemainingItemsThresholdReached">
                     <CollectionView.Header>

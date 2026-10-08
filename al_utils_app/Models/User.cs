@@ -4,8 +4,14 @@ using System.Text.Json.Serialization;
 
 namespace al_utils_app.Models
 {
-    internal class User
+    public class User
     {
+        public User(string name, int id)
+        {
+            Name = name;
+            ID = id;
+        }
+
         [JsonPropertyName("name")]
         public string Name { get; set; }
         [JsonPropertyName("id")]

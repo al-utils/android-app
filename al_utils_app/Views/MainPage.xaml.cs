@@ -32,53 +32,9 @@ namespace al_utils_app.Views
         // todo:
         // completed but current
         // full schedule
+        // hide update
         
-        public string BuildActivityQuery(int page)
-        {
-            var s = $@"query {{
-  Page(page: {page}, perPage: 50) {{
-    activities(userId: {userId}, sort: ID_DESC) {{
-      __typename
-      ... on ListActivity{{
-        id
-        status
-        progress
-        createdAt
-        media {{
-          id
-          coverImage {{
-            extraLarge
-          }}
-          title {{
-            romaji
-            english
-            native
-          }}
-        }}
-        likes {{
-          id
-        }}
-      }}
-    }}
-  }}
-}}
-";
-            return s;
-        }
 
-        private static readonly int activityPageNum = 1;
-        private async Task<List<Activity>> GetActivityData()
-        {
-            Response data = await Request.RequestDataAsync(BuildActivityQuery(activityPageNum), new Dictionary<string, object>());
-            return data.Data.Page.Activities;
-        }
-
-        private ObservableCollection<Activity> ActivityList { get; set; } = new ObservableCollection<Activity>();
-        public async Task CreateActivities()
-        {
-            List<Activity> activities = await GetActivityData();
-            activityList.ItemsSource = activities;
-        }
 
         private string forUser;
         public string ForUser
@@ -114,7 +70,7 @@ namespace al_utils_app.Views
         }
 
         private MainPageViewModel viewModel;
-        public MainPage(string user = null)
+        public MainPage(User user = null)
         {
             Console.Out.WriteLine("EF:OEIFJ:EOIFJE:OFIJE:OFj");
             InitializeComponent();
@@ -155,8 +111,9 @@ namespace al_utils_app.Views
             viewModel = new MainPageViewModel(this, user);
             releasedGrid.BindingContext = viewModel;
             notYetReleasedGrid.BindingContext = viewModel;
+            activityList.BindingContext = viewModel;
 
-            CreateActivities();
+            //CreateActivities();
         }
 
         internal async void LongPressMenu(MediaListEntry media)
@@ -197,6 +154,8 @@ namespace al_utils_app.Views
                 NotYetReleasedCount = viewModel.NotYetReleasedList.Count;
                 BindableLayout.SetItemsSource(notYetReleasedGrid, viewModel.NotYetReleasedList);
             }
+
+            activityList.ItemsSource = viewModel.ActivityList;
         }
 
         private int IsID(string s)
@@ -263,7 +222,7 @@ namespace al_utils_app.Views
 
             // regenerate chart
             //await CreateCards();
-            await Navigation.PushAsync(new MainPage(user.Name));
+            await Navigation.PushAsync(new MainPage(user));
         }
 
         private async void menuIcon_Clicked(object sender, EventArgs e)

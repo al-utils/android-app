@@ -45,7 +45,41 @@ namespace al_utils_app.ViewModels
             }
             return s + "}";
         }
+
+        public static string BuildActivityQuery(int page, int userId)
+        {
+            var s = $@"query {{
+  Page(page: {page}, perPage: 50) {{
+    activities(userId: {userId}, sort: ID_DESC) {{
+      __typename
+      ... on ListActivity{{
+        id
+        status
+        progress
+        createdAt
+        media {{
+          id
+          coverImage {{
+            extraLarge
+          }}
+          title {{
+            romaji
+            english
+            native
+          }}
+        }}
+        likes {{
+          id
+        }}
+      }}
+    }}
+  }}
+}}
+";
+            return s;
+        }
         private static string currentUser = Preferences.Get("currentUser", "");
+        private static int userId = Preferences.Get("userId", -1);
         private static Dictionary<string, object> BuildVariables(string user)
         {
             Dictionary<string, object> variables = new Dictionary<string, object>();
@@ -53,12 +87,14 @@ namespace al_utils_app.ViewModels
             return variables;
         }
 
-        public static async Task<(List<MediaListEntry>, string)> GetData(string user = null)
+
+        private static readonly int activityPageNum = 1;
+        public static async Task<(List<MediaListEntry>, List<Activity>, User)> GetData(User user = null)
         {
             if (user == null)
-                user = currentUser;
+                user = new User(currentUser, userId);
 
-            Response data = await Request.RequestDataAsync(API.BuildQuery(), API.BuildVariables(user));
+            Response data = await Request.RequestDataAsync(API.BuildQuery(), API.BuildVariables(user.Name));
 
             var dict = data.Data.Pages;
             List<MediaListEntry> mediaList = new List<MediaListEntry>();
@@ -70,21 +106,24 @@ namespace al_utils_app.ViewModels
                 var jsonString2 = jsonElement.ToString();
                 ResponsePage data2 = JsonSerializer.Deserialize<ResponsePage>(jsonString2);
                 mediaList.AddRange(data2.MediaList);
-                //Console.Out.WriteLine(data2.MediaList.Count);
             }
-            //Console.Out.WriteLine("MediaList Count: " + mediaList.Count);
 
             // filter
             mediaList = mediaList.Where(x => x.Details.Airing != null)
                                  .OrderBy(x => x.Details.Airing.TimeUntilAiring)
                                  .ToList();
 
-            //Console.Out.WriteLine("MediaList Count: " + mediaList.Count);
 
-            //if (status == "RELEASING" || status == "NOT_YET_RELEASED")
-            //    return (mediaList.Where(x => x.Details.Status == status).ToList(), currentUser);
+            // load activities
+            data = await Request.RequestDataAsync(API.BuildActivityQuery(activityPageNum, user.ID), new Dictionary<string, object>());
+            // only care about list updates, ignore other msg types
+            List<Activity> activityList = data.Data.Page.Activities;
 
-            return (mediaList, user);
+            activityList = activityList.Where(x => x.TypeName == "ListActivity").ToList();
+
+            Debug.WriteLine(activityList.Count);
+
+            return (mediaList, activityList, user);
         }
     }
 }
