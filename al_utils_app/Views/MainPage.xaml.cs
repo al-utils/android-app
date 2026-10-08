@@ -72,7 +72,6 @@ namespace al_utils_app.Views
         private MainPageViewModel viewModel;
         public MainPage(User user = null)
         {
-            Console.Out.WriteLine("EF:OEIFJ:EOIFJE:OFIJE:OFj");
             InitializeComponent();
             BindingContext = this;
             Hidden.LoadHiddenList();
@@ -99,21 +98,10 @@ namespace al_utils_app.Views
             refreshView2.Command = refreshCommand2;
             refreshView3.Command = refreshCommand3;
 
-
-            //if (user != "")
-            //    //{
-            //    //    // search for user
-            //    //    DisplaySearchUserPrompt(true);
-
-            //    //}
-            //    currentUser = user;
-
             viewModel = new MainPageViewModel(this, user);
             releasedGrid.BindingContext = viewModel;
             notYetReleasedGrid.BindingContext = viewModel;
             activityList.BindingContext = viewModel;
-
-            //CreateActivities();
         }
 
         internal async void LongPressMenu(MediaListEntry media)
@@ -202,8 +190,6 @@ namespace al_utils_app.Views
             json.Add("query", query);
             string jsonString = JsonSerializer.Serialize(json);
 
-            Console.Out.WriteLine(jsonString);
-
             var response = await client.PostAsync(URL, new StringContent(jsonString, Encoding.UTF8, "application/json"));
             if (!response.IsSuccessStatusCode)
             {
@@ -217,21 +203,22 @@ namespace al_utils_app.Views
 
             Response data = JsonSerializer.Deserialize<Response>(jsonString);
             User user = data.Data.User;
-            //currentUser = user.Name;
-            //Preferences.Set("currentUser", currentUser);
 
-            // regenerate chart
-            //await CreateCards();
             await Navigation.PushAsync(new MainPage(user));
         }
 
         private async void menuIcon_Clicked(object sender, EventArgs e)
         {
-            var result = await DisplayActionSheet("Menu", "Cancel", null, "Search User", "Search Media", "Settings");
-            Console.Out.WriteLine(result);
+            var result = await DisplayActionSheet("Menu", "Cancel", null, "Open User in WebView", "Search User", "Search Media", "Settings");
             switch (result)
             {
                 case "Cancel":
+                    break;
+                case "Open User in WebView":
+                    User user = viewModel.getUser();
+                    if (user == null)
+                        user = new User(currentUser, userId);
+                    await Navigation.PushAsync(new WebViewPage("https://anilist.co/user/" + user.Name, user.Name + "'s Profile"));
                     break;
                 case "Search User":
                     await DisplaySearchUserPrompt();

@@ -84,11 +84,6 @@ namespace al_utils_app.Views
             List<MediaDetails> results = await GetData(search);
             Results = new ObservableCollection<MediaDetails>(results);
 
-            //Console.WriteLine(Results.Count);
-            //foreach (var d in results)
-            //{
-            //    Console.WriteLine(d.Id);
-            //}
             resultList.ItemsSource = Results;
 		}
 

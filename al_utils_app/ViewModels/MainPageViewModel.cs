@@ -62,6 +62,7 @@ namespace al_utils_app.ViewModels
 
         private MainPage instance;
         private User user;
+        public User getUser() { return user; }
         public MainPageViewModel(MainPage instance, User user = null)
         {
             this.instance = instance;
@@ -116,7 +117,6 @@ namespace al_utils_app.ViewModels
             {
                 return new Command((x) =>
                 {
-                    Debug.WriteLine("OEFIJEOIFJE");
                     MediaListEntry media = (MediaListEntry)x;
                     Application.Current.MainPage.Navigation.PushAsync(new MediaPage(media.Details.Id, TypeEnum.Type.Anime));
                 });
