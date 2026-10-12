@@ -232,33 +232,36 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <StackLayout HeightRequest="140" Padding="20,0,20,20">
-                                <Frame BackgroundColor="#3c3836" HeightRequest="10000" Padding="0" CornerRadius="10">
-                                    <StackLayout Orientation="Horizontal">
-                                        <Image Source="{Binding Media.CoverImage.ExtraLarge}" WidthRequest="100" Aspect="AspectFill"/>
-                                        <StackLayout Margin="10, 10, 20, 10" HorizontalOptions="FillAndExpand">
-                                            <Label Text="{Binding GetActivityMessage}"
-                                                   FontFamily="Jost"
-                                                   FontSize="18"
-                                                   TextColor="White"
-                                                   VerticalOptions="StartAndExpand"/>
-                                            <StackLayout Orientation="Horizontal" VerticalOptions="End">
-                                                <Label Text="{Binding GetRelativeTime}"
+                                <multigestureviewplugin:MultiGestureView VibrateOnTap="false" VibrateOnLongPress="true" HeightRequest="140"
+                                    LongPressedCommand="{Binding Path=BindingContext.LongPressActivityCommand, Source={x:Reference activityList}}"
+                                    LongPressedCommandParameter="{Binding .}"
+                                    TappedCommand="{Binding Path=BindingContext.TapActivityCommand, Source={x:Reference activityList}}"
+                                    TappedCommandParameter="{Binding .}">
+                                    <Frame BackgroundColor="#3c3836" HeightRequest="10000" Padding="0" CornerRadius="10">
+                                        <StackLayout Orientation="Horizontal">
+                                            <Image Source="{Binding Media.CoverImage.ExtraLarge}" WidthRequest="100" Aspect="AspectFill"/>
+                                            <StackLayout Margin="10, 10, 20, 10" HorizontalOptions="FillAndExpand">
+                                                <Label Text="{Binding GetActivityMessage}"
                                                        FontFamily="Jost"
-                                                       FontSize="15"
-                                                       TextColor="#c6c3bb"
-                                                       HorizontalOptions="StartAndExpand"/>
-                                                <Label Text="{Binding Likes.Count,StringFormat='{0} Likes'}"
-                                                       FontFamily="Jost"
-                                                       FontSize="15"
-                                                       TextColor="#c6c3bb"
-                                                       HorizontalOptions="End"/>
+                                                       FontSize="18"
+                                                       TextColor="White"
+                                                       VerticalOptions="StartAndExpand"/>
+                                                <StackLayout Orientation="Horizontal" VerticalOptions="End">
+                                                    <Label Text="{Binding GetRelativeTime}"
+                                                           FontFamily="Jost"
+                                                           FontSize="15"
+                                                           TextColor="#c6c3bb"
+                                                           HorizontalOptions="StartAndExpand"/>
+                                                    <Label Text="{Binding Likes.Count,StringFormat='{0} Likes'}"
+                                                           FontFamily="Jost"
+                                                           FontSize="15"
+                                                           TextColor="#c6c3bb"
+                                                           HorizontalOptions="End"/>
+                                                </StackLayout>
                                             </StackLayout>
                                         </StackLayout>
-                                        <StackLayout.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1" CommandParameter="{Binding Media.Id}"/>
-                                        </StackLayout.GestureRecognizers>
-                                    </StackLayout>
-                                </Frame>
+                                    </Frame>
+                                </multigestureviewplugin:MultiGestureView>
                             </StackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

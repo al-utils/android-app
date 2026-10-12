@@ -36,7 +36,6 @@ namespace al_utils_app
 
             // request
             var response = await client.PostAsync(URL, new StringContent(jsonString, Encoding.UTF8, "application/json"));
-            //Console.WriteLine(response.StatusCode);
             //Console.WriteLine(response.Content.ReadAsStringAsync().Result);
             if (!response.IsSuccessStatusCode)
                 return null;

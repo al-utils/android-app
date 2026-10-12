@@ -28,5 +28,7 @@ namespace al_utils_app.Models
 
         [JsonPropertyName("Viewer")]
         public Viewer Viewer { get; set; }
+        [JsonPropertyName("DeleteActivity")]
+        public DeleteActivity DeleteActivity { get; set; }
     }
 }

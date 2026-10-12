@@ -32,7 +32,6 @@ namespace al_utils_app.Views
         // todo:
         // completed but current
         // full schedule
-        // hide update
         
 
 
@@ -117,9 +116,33 @@ namespace al_utils_app.Views
                 case "Hide":
                     Hidden.Hide(media.Details.Id);
                     //RemoveCard(gestureView, g);
-                    viewModel.RemoveMedia(media);
+                    viewModel.HideMedia(media);
                     Hidden.SaveHiddenList();
 
+                    OnAppearing();
+
+                    break;
+            }
+        }
+
+        internal async void LongPressMenuActivity(Activity activity)
+        {
+            var result = await DisplayActionSheet("Options", "Cancel", null, "Delete Activity", "Open Activity in WebView");
+            switch (result)
+            {
+                case "Cancel":
+                    break;
+                case "Delete Activity":
+                    var _ = Mutation.DeleteActivity(activity).Result;
+                    //bool isDeleted = 
+                    //if (isDeleted)
+                    //{
+                    //    viewModel.DeleteActivity(activity);
+                    //    //OnAppearing();
+                    //}
+                    break;
+                case "Open Activity in WebView":
+                    await Navigation.PushAsync(new WebViewPage("https://anilist.co/activity/" + activity.Id));
                     break;
             }
         }
@@ -261,12 +284,6 @@ namespace al_utils_app.Views
         private void CollectionView_RemainingItemsThresholdReached(object sender, EventArgs e)
         {
 
-        }
-
-        private async void TapGestureRecognizer_Tapped_1(object sender, EventArgs e)
-        {
-            var id = (int)((TappedEventArgs)e).Parameter;
-            await Navigation.PushAsync(new MediaPage(id, TypeEnum.Type.Anime));
         }
     }
 }

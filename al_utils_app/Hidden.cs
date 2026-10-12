@@ -11,7 +11,8 @@ namespace al_utils_app
         private static List<int> hiddenIds = new List<int>();
         public static void Hide(int id)
         {
-            hiddenIds.Add(id);
+            if (!hiddenIds.Contains(id))
+                hiddenIds.Add(id);
         }
 
         public static void Show(int id)

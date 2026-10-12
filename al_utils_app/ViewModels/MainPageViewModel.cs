@@ -111,6 +111,19 @@ namespace al_utils_app.ViewModels
             }
         }
 
+        public ICommand LongPressActivityCommand
+        {
+            get
+            {
+                return new Command((x) =>
+                {
+                    Activity activity = (Activity)x;
+                    instance.LongPressMenuActivity(activity);
+                });
+
+            }
+        }
+
         public ICommand TapCommand
         {
             get
@@ -123,10 +136,27 @@ namespace al_utils_app.ViewModels
             }
         }
 
-        public void RemoveMedia(MediaListEntry media)
+        public ICommand TapActivityCommand
+        {
+            get
+            {
+                return new Command((x) =>
+                {
+                    Activity activity = (Activity)x;
+                    Application.Current.MainPage.Navigation.PushAsync(new MediaPage(activity.Media.Id, TypeEnum.Type.Anime));
+                });
+            }
+        }
+
+        public void HideMedia(MediaListEntry media)
         {
             ReleasingList.Remove(media);
             instance.ReleasingCount = ReleasingList.Count;
+        }
+
+        public void DeleteActivity(Activity activity)
+        {
+            ActivityList.Remove(activity);
         }
     }
 }
