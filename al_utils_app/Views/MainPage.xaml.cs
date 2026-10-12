@@ -105,7 +105,12 @@ namespace al_utils_app.Views
 
         internal async void LongPressMenu(MediaListEntry media)
         {
-            var result = await DisplayActionSheet("Options", "Cancel", null, "Copy Title", "Hide");
+            string result;
+            User user = viewModel.getUser();
+            if (user == null) // authenticated user
+                result = await DisplayActionSheet("Options", "Cancel", null, "Copy Title", "Hide");
+            else
+                result = await DisplayActionSheet("Options", "Cancel", null, "Copy Title"); // disable options viewing non-authenticated accounts
             switch (result)
             {
                 case "Cancel":
@@ -127,19 +132,23 @@ namespace al_utils_app.Views
 
         internal async void LongPressMenuActivity(Activity activity)
         {
-            var result = await DisplayActionSheet("Options", "Cancel", null, "Delete Activity", "Open Activity in WebView");
+            string result;
+            User user = viewModel.getUser();
+            if (user == null) // authenticated user
+                result = await DisplayActionSheet("Options", "Cancel", null, "Delete Activity", "Open Activity in WebView");
+            else
+                result = await DisplayActionSheet("Options", "Cancel", null, "Open Activity in WebView"); // disable options viewing non-authenticated accounts
             switch (result)
             {
                 case "Cancel":
                     break;
                 case "Delete Activity":
-                    var _ = Mutation.DeleteActivity(activity).Result;
-                    //bool isDeleted = 
-                    //if (isDeleted)
-                    //{
-                    //    viewModel.DeleteActivity(activity);
-                    //    //OnAppearing();
-                    //}
+                    var isDeleted = Mutation.DeleteActivity(activity).Result;
+                    if (isDeleted)
+                    {
+                        viewModel.DeleteActivity(activity);
+                        OnAppearing();
+                    }
                     break;
                 case "Open Activity in WebView":
                     await Navigation.PushAsync(new WebViewPage("https://anilist.co/activity/" + activity.Id));

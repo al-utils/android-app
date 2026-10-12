@@ -1,6 +1,7 @@
 ﻿using al_utils_app.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -35,8 +36,8 @@ namespace al_utils_app
             string jsonString = JsonSerializer.Serialize(json);
 
             // request
-            var response = await client.PostAsync(URL, new StringContent(jsonString, Encoding.UTF8, "application/json"));
-            //Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+            var response = client.PostAsync(URL, new StringContent(jsonString, Encoding.UTF8, "application/json")).GetAwaiter().GetResult(); // bruh whyyy https://stackoverflow.com/a/56944433/19656554
+            //Debug.WriteLine(response.Content.ReadAsStringAsync().Result);
             if (!response.IsSuccessStatusCode)
                 return null;
             jsonString = await response.Content.ReadAsStringAsync();

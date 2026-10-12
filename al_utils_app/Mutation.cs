@@ -16,27 +16,19 @@ namespace al_utils_app
     deleted
   }}
 }}";
-            query = $@"mutation ($listEntryId: Int) {{
-  SaveMediaListEntry(id:$listEntryId,mediaId:1,status:CURRENT) {{
-    id
-    status
-  }}
-}}";
             Response r = await Request.RequestDataAsync(query, new Dictionary<string, object>());
-            //if (r != null)
-            //{
-            //    Debug.WriteLine(r);
-            //    var isDeleted = r.Data.DeleteActivity.Deleted;
-            //    if (isDeleted)
-            //        return true;
-            //    return false;
-            //}
-            //else
-            //{
-            //    Debug.WriteLine("Error: Activity not deleted");
-            //    return false;
-            //}
-            return false;
+            if (r != null)
+            {
+                var isDeleted = r.Data.DeleteActivity.Deleted;
+                if (isDeleted)
+                    return true;
+                return false;
+            }
+            else
+            {
+                Debug.WriteLine("Error: Activity not deleted");
+                return false;
+            }
         }
 
     }
