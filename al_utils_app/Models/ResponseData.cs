@@ -30,5 +30,7 @@ namespace al_utils_app.Models
         public Viewer Viewer { get; set; }
         [JsonPropertyName("DeleteActivity")]
         public DeleteActivity DeleteActivity { get; set; }
+        [JsonPropertyName("Character")]
+        public Character Character { get; set; }
     }
 }

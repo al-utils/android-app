@@ -19,24 +19,29 @@ namespace al_utils_app
         {
         }
 
-        public static async Task<Response> RequestDataAsync(string query, Dictionary<string, object> variables, string testToken=null)
+        public static async Task<Response> RequestDataAsync(string query, Dictionary<string, object> variables, string testToken=null, bool needAuth=false)
         {
             Dictionary<string, object> json = new Dictionary<string, object>();
 
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
 
-            if (testToken != null)
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", testToken);
-            else
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Authentication.GetAccessToken());
+            if (needAuth)
+                if (testToken != null)
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", testToken);
+                else
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Authentication.GetAccessToken());
 
             json.Add("query", query);
             json.Add("variables", JsonSerializer.Serialize(variables));
             string jsonString = JsonSerializer.Serialize(json);
 
             // request
-            var response = client.PostAsync(URL, new StringContent(jsonString, Encoding.UTF8, "application/json")).GetAwaiter().GetResult(); // bruh whyyy https://stackoverflow.com/a/56944433/19656554
+            HttpResponseMessage response;
+            if (needAuth)
+                response = client.PostAsync(URL, new StringContent(jsonString, Encoding.UTF8, "application/json")).GetAwaiter().GetResult(); // bruh whyyy https://stackoverflow.com/a/56944433/19656554
+            else
+                response = await client.PostAsync(URL, new StringContent(jsonString, Encoding.UTF8, "application/json"));
             //Debug.WriteLine(response.Content.ReadAsStringAsync().Result);
             if (!response.IsSuccessStatusCode)
                 return null;

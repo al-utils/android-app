@@ -16,7 +16,7 @@ namespace al_utils_app
     deleted
   }}
 }}";
-            Response r = await Request.RequestDataAsync(query, new Dictionary<string, object>());
+            Response r = await Request.RequestDataAsync(query, new Dictionary<string, object>(), needAuth: true);
             if (r != null)
             {
                 var isDeleted = r.Data.DeleteActivity.Deleted;

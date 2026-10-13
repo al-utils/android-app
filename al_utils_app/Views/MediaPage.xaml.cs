@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -163,7 +164,29 @@ namespace al_utils_app.Views
   }}
 }}";
 
-        string queryCharacter = "";
+        string queryCharacter = $@"query ($id: Int) {{
+  Character (id: $id) {{
+    id
+    name {{
+      full
+      native
+      alternative
+    }}
+    image {{
+      large
+    }}
+    description
+    gender
+    dateOfBirth {{
+      year
+      month
+      day
+    }}
+    age
+    bloodType
+    siteUrl
+  }}
+}}";
 
         private int mediaID;
         private Dictionary<string, object> BuildVariables()
@@ -181,7 +204,24 @@ namespace al_utils_app.Views
             backIcon.Source = ImageSource.FromResource("al_utils_app.Images.arrow-left.png");
             menuIcon.Source = ImageSource.FromResource("al_utils_app.Images.menu.png");
 
-            FillData(type);
+            switch (type)
+            {
+                case TypeEnum.Type.Anime:
+                    FillData(type);
+                    break;
+                case TypeEnum.Type.Manga:
+                    FillData(type);
+                    break;
+                case TypeEnum.Type.Character:
+                    FillCharacterData();
+                    stats.IsVisible = false;
+                    info.IsVisible = false;
+                    characterInfo.IsVisible = true;
+                    break;
+                default:
+                    FillData(type);
+                    break;
+            }
         }
         private async void backIcon_Clicked(object sender, EventArgs e)
         {
@@ -214,6 +254,13 @@ namespace al_utils_app.Views
             }
             Response data = await Request.RequestDataAsync(query, BuildVariables());
             var dict = data.Data.Media;
+            return dict;
+        }
+
+        private async Task<Character> GetCharacterData()
+        {
+            Response data = await Request.RequestDataAsync(queryCharacter, BuildVariables());
+            var dict = data.Data.Character;
             return dict;
         }
 
@@ -306,6 +353,23 @@ namespace al_utils_app.Views
             // relations list
             relatedMediaList.ItemsSource = details.Relations.Edge;
             relatedCharacterList.ItemsSource = details.Characters.Edge;
+        }
+
+        private async Task FillCharacterData()
+        {
+            Character details = await GetCharacterData();
+
+            Description = details.Description;
+            CoverImageURL = details.Image.Large;
+            CoverImageColor = Color.FromHex("#262524");
+            Title = details.Name.Full;
+            SiteUrl = details.SiteUrl;
+
+            Id = details.Id;
+            Age = details.Age;
+            Gender = details.Gender;
+            DateOfBirth = details.DateOfBirth.ToString();
+            BloodType = details.BloodType;
         }
 
         private void AddTag(string text, string styleClass)
@@ -584,6 +648,50 @@ namespace al_utils_app.Views
             }
         }
 
+        private string gender;
+        public string Gender
+        {
+            get { return gender; }
+            set
+            {
+                gender = value;
+                OnPropertyChanged(nameof(Gender));
+            }
+        }
+
+        private string dateOfBirth;
+        public string DateOfBirth
+        {
+            get { return dateOfBirth; }
+            set
+            {
+                dateOfBirth = value;
+                OnPropertyChanged(nameof(DateOfBirth));
+            }
+        }
+
+        private string age;
+        public string Age
+        {
+            get { return age; }
+            set
+            {
+                age = value;
+                OnPropertyChanged(nameof(Age));
+            }
+        }
+
+        private string bloodType;
+        public string BloodType
+        {
+            get { return bloodType; }
+            set
+            {
+                bloodType = value;
+                OnPropertyChanged(nameof(BloodType));
+            }
+        }
+
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             var title = ((Label)sender).Text;
@@ -592,14 +700,15 @@ namespace al_utils_app.Views
 
         private async void CharacterTapped(object sender, EventArgs e)
         {
-            return;
+            var id = (int)((TappedEventArgs)e).Parameter;
+            await Navigation.PushAsync(new MediaPage(id, TypeEnum.Type.Character));
         }
 
         private async void RelatedTapped(object sender, EventArgs e)
         {
+            Debug.WriteLine("woef2");
+            Debug.WriteLine(((TappedEventArgs)e).Parameter);
             var (id, type) = ((int,TypeEnum.Type))((TappedEventArgs)e).Parameter;
-            Console.WriteLine("" + id);
-            Console.WriteLine("" + (int)type);
             await Navigation.PushAsync(new MediaPage(id, type));
         }
 

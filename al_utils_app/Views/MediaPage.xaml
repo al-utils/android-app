@@ -193,6 +193,24 @@
     
                     </StackLayout>
 
+                    <StackLayout x:Name="characterInfo" IsVisible="false"
+                                BackgroundColor="#262524"
+                                Margin="15,10,15,0"
+                                Padding="10,5">
+    
+                        <Label Text="{Binding Id, StringFormat='ID: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding Age, StringFormat='Age: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding Gender, StringFormat='Gender: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding DateOfBirth, StringFormat='Birthday: {0}'}" 
+                            StyleClass="info"/>
+                        <Label Text="{Binding BloodType, StringFormat='Blood Type: {0}'}" 
+                            StyleClass="info"/>
+    
+                    </StackLayout>
+
 
                     <!-- genres -->
                     <StackLayout Margin="15,10,15,0"
